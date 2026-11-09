@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="padheader">
+        <div class="container vis-btn-logo">
+
+            <div class="logo">
+                <img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass">
+            </div>
+
+            <nav class="btns-header">
+                <ul>
+                    <li>
+                        <a href="index.html">Início</a>
+                    </li>
+
+                    <li>
+                        <a href="login.html">Sou Aluno</a>
+                    </li>
+
+                    <li>
+                        <a href="loginP.html">Sou Professor</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <button
+                class="mobile-menu-toggle"
+                type="button"
+                aria-label="Abrir menu">
+
+                <i class="fas fa-bars"></i>
+            </button>
+
+        </div>
+    </header>
+
+    <!-- CADASTRO -->
+    <main>
+        <section class="pad-log">
+
+            <div class="login-container">
+
+                <h2>Criar Conta</h2>
+
+                <p style="text-align: center; margin-bottom: 20px;">
+                    Cadastre-se para acessar o Reclass.
+                </p>
+
+                <form id="formCadastro">
+
+                    <!-- NOME -->
+                    <div class="form-group">
+                        <label for="nome">
+                            <i class="fas fa-user"></i>
+                            Nome completo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Digite seu nome completo"
+                            autocomplete="name"
+                            maxlength="100"
+                            required>
+                    </div>
+
+                    <!-- E-MAIL -->
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Digite seu e-mail"
+                            autocomplete="email"
+                            maxlength="254"
+                            required>
+                    </div>
+
+                    <!-- SENHA -->
+                    <div class="form-group">
+                        <label for="senha">
+                            <i class="fas fa-lock"></i>
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Crie uma senha"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required>
+                    </div>
+
+                    <!-- CONFIRMAR SENHA -->
+                    <div class="form-group">
+                        <label for="confirmarSenha">
+                            <i class="fas fa-lock"></i>
+                            Confirmar senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmarSenha"
+                            name="confirmarSenha"
+                            placeholder="Digite a senha novamente"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required>
+                    </div>
+
+                    <!-- CÓDIGO DO PROFESSOR -->
+                    <div class="form-group">
+                        <label for="codigoX">
+                            <i class="fas fa-id-card"></i>
+                            Código de professor (opcional)
+                        </label>
+
+                        <input
+                            type="password"
+                            id="codigoX"
+                            name="codigoX"
+                            placeholder="Deixe vazio se for aluno"
+                            autocomplete="off">
+                    </div>
+
+                    <!-- MENSAGEM -->
+                    <p
+                        id="mensagem"
+                        role="status"
+                        aria-live="polite"
+                        style="margin: 12px 0; text-align: center;">
+
+                    </p>
+
+                    <!-- BOTÃO -->
+                    <button
+                        type="submit"
+                        id="btnCadastrar"
+                        class="btn btn-primary btn-login">
+
+                        Criar minha conta
+                    </button>
+
+                </form>
+
+                <div class="login-footer">
+                    <p>
+                        Já tem uma conta?
+                        <a href="login.html">Entrar</a>
+                    </p>
+
+                    <p style="margin-top: 8px;">
+                        É professor?
+                        <a href="loginP.html">Acessar área do professor</a>
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="container">
+            <p>
+                &copy; 2026 Reclass - Sistema de Reposição de Aulas
+            </p>
+        </div>
+    </footer>
+
+    <!-- CONEXÃO COM SUPABASE -->
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+
+        const formulario = document.getElementById('formCadastro');
+        const mensagem = document.getElementById('mensagem');
+        const botao = document.getElementById('btnCadastrar');
+
+        formulario.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            mensagem.textContent = '';
+
+            const nome = document
+                .getElementById('nome')
+                .value
+                .trim();
+
+            const email = document
+                .getElementById('email')
+                .value
+                .trim();
+
+            const senha = document
+                .getElementById('senha')
+                .value;
+
+            const confirmarSenha = document
+                .getElementById('confirmarSenha')
+                .value;
+
+            const codigoProfessor = document
+                .getElementById('codigoX')
+                .value
+                .trim();
+
+            // VALIDAR AS SENHAS
+            if (senha !== confirmarSenha) {
+                mensagem.textContent = 'As senhas não coincidem.';
+                return;
+            }
+
+            if (senha.length < 6) {
+                mensagem.textContent =
+                    'A senha deve ter pelo menos 6 caracteres.';
+                return;
+            }
+
+            if (!nome || !email) {
+                mensagem.textContent =
+                    'Preencha todos os campos obrigatórios.';
+                return;
+            }
+
+            botao.disabled = true;
+            botao.textContent = 'Criando conta...';
+            mensagem.textContent = 'Enviando cadastro...';
+
+            try {
+                // ENVIAR O CADASTRO PARA A EDGE FUNCTION
+                const { data, error } =
+                    await supabase.functions.invoke(
+                        'smooth-api',
+                        {
+                            body: {
+                                nome: nome,
+                                email: email,
+                                senha: senha,
+                                codigo_professor: codigoProfessor
+                            }
+                        }
+                    );
+
+                // TRATAR ERROS RETORNADOS PELO SERVIDOR
+                if (error) {
+                    let mensagemErro = error.message;
+
+                    try {
+                        const resposta = error.context;
+
+                        if (resposta && typeof resposta.json === 'function') {
+                            const detalhe = await resposta.clone().json();
+
+                            if (detalhe.erro) {
+                                mensagemErro = detalhe.erro;
+                            }
+                        }
+                    } catch {
+                        // Utilizar a mensagem original se não houver
+                        // detalhes adicionais na resposta.
+                    }
+
+                    throw new Error(mensagemErro);
+                }
+
+                if (!data || !data.sucesso) {
+                    throw new Error(
+                        data?.erro || 'Não foi possível criar a conta.'
+                    );
+                }
+
+                // DIFERENCIAR ALUNO E PROFESSOR
+                if (data.tipo_usuario === 'professor') {
+                    mensagem.textContent =
+                        'Professor cadastrado com sucesso! Redirecionando...';
+
+                    window.location.href = 'loginP.html';
+                } else {
+                    mensagem.textContent =
+                        'Aluno cadastrado com sucesso! Redirecionando...';
+
+                    window.location.href = 'login.html';
+                }
+
+            } catch (erro) {
+                mensagem.textContent =
+                    erro.message ||
+                    'Ocorreu um erro ao realizar o cadastro.';
+            } finally {
+                botao.disabled = false;
+                botao.textContent = 'Criar minha conta';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil | Reclass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+    <style>
+        :root {
+            --perfil-azul: #3267c7;
+            --perfil-azul-escuro: #234f9f;
+            --perfil-azul-claro: #eef4ff;
+            --perfil-texto: #1f2937;
+            --perfil-suave: #6b7280;
+            --perfil-borda: #e6eaf0;
+            --perfil-fundo: #f6f8fc;
+            --perfil-card: #ffffff;
+            --perfil-verde: #16835f;
+            --perfil-laranja: #b96d16;
+            --perfil-sombra: 0 12px 35px rgba(28, 55, 105, .07);
+        }
+
+        body { background: var(--perfil-fundo); color: var(--perfil-texto); font-family: 'Poppins', sans-serif; }
+        .perfil-page { padding: 32px 0 48px; }
+        .perfil-layout { display: flex; gap: 30px; padding: 40px 0; align-items: flex-start; }
+        .perfil-sidebar, .perfil-panel, .perfil-hero, .perfil-stat, .perfil-next { background: var(--perfil-card); border: 1px solid var(--perfil-borda); border-radius: 18px; box-shadow: var(--perfil-sombra); }
+        .perfil-sidebar { padding: 22px 14px; position: sticky; top: 22px; }
+        .perfil-side-label { margin: 0 12px 16px; color: #9aa3b2; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; }
+        .perfil-nav { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+        .perfil-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 13px; text-decoration: none; color: #596579; border-radius: 11px; font-size: 13px; font-weight: 500; transition: background .18s, color .18s, transform .18s; }
+        .perfil-nav a i { width: 18px; text-align: center; font-size: 15px; }
+        .perfil-nav a:hover { background: #f3f6fc; color: var(--perfil-azul); transform: translateX(2px); }
+        .perfil-nav a.active { background: var(--perfil-azul-claro); color: var(--perfil-azul); font-weight: 600; }
+        .perfil-side-help { margin: 25px 5px 0; padding: 15px; border-radius: 13px; background: #f5f8ff; border: 1px solid #e5edff; }
+        .perfil-side-help i { color: var(--perfil-azul); font-size: 17px; }
+        .perfil-side-help strong { display: block; margin: 8px 0 4px; font-size: 12px; }
+        .perfil-side-help p { margin: 0; color: var(--perfil-suave); font-size: 10px; line-height: 1.7; }
+        .perfil-main { flex: 1; min-width: 0; }
+        .perfil-page-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 15px; margin-bottom: 22px; }
+        .perfil-eyebrow { color: var(--perfil-azul); text-transform: uppercase; font-size: 10px; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 5px; }
+        .perfil-page-heading h1 { font-size: clamp(23px, 3vw, 30px); letter-spacing: -.8px; margin: 0; line-height: 1.25; }
+        .perfil-page-heading p { color: var(--perfil-suave); font-size: 12px; margin: 7px 0 0; }
+        .perfil-refresh { border: 1px solid var(--perfil-borda); background: #fff; border-radius: 10px; color: #536175; cursor: pointer; padding: 10px 13px; font: 500 12px 'Poppins',sans-serif; white-space: nowrap; }
+        .perfil-refresh:hover { color: var(--perfil-azul); border-color: #c8d8fa; }
+        .perfil-hero { position: relative; overflow: hidden; padding: 26px; margin-bottom: 18px; display: flex; align-items: center; gap: 20px; }
+        .perfil-hero::before { content: ''; position: absolute; width: 210px; height: 210px; border-radius: 50%; right: -65px; top: -105px; background: radial-gradient(circle, rgba(50,103,199,.12), rgba(50,103,199,0)); pointer-events: none; }
+        .perfil-avatar { width: 82px; height: 82px; flex: 0 0 82px; border-radius: 23px; background: linear-gradient(145deg, #477fe0, #2855ad); display: grid; place-items: center; color: #fff; font-size: 29px; font-weight: 700; box-shadow: 0 9px 20px rgba(50,103,199,.25); }
+        .perfil-avatar-wrap { display: flex; flex: 0 0 auto; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 1; }
+        .perfil-avatar { position: relative; overflow: hidden; }
+        .perfil-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+        .perfil-avatar-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+        .perfil-avatar-change, .perfil-avatar-remove { display: inline-flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid var(--perfil-borda); background: #fff; color: var(--perfil-azul); border-radius: 7px; padding: 6px 8px; font: 600 9px 'Poppins',sans-serif; cursor: pointer; }
+        .perfil-avatar-change:hover, .perfil-avatar-remove:hover { background: var(--perfil-azul-claro); }
+        .perfil-avatar-remove { color: #a63b3b; }
+        .perfil-avatar-change:focus-within, .perfil-avatar-remove:focus-visible { outline: 2px solid #80a5f3; outline-offset: 2px; }
+        .perfil-avatar-actions button:disabled, .perfil-avatar-actions label.disabled { opacity: .55; cursor: wait; }
+        .perfil-avatar-remove[hidden] { display: none; }
+
+        .perfil-identity { flex: 1; min-width: 0; position: relative; }
+        .perfil-identity h2 { font-size: 20px; margin: 0 0 5px; font-weight: 700; overflow-wrap: anywhere; }
+        .perfil-identity p { margin: 0 0 12px; font-size: 12px; color: var(--perfil-suave); overflow-wrap: anywhere; }
+        .perfil-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .perfil-tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border-radius: 7px; font-size: 10px; font-weight: 600; background: #f2f5fa; color: #536175; }
+        .perfil-tag.role { background: #eaf2ff; color: var(--perfil-azul); }
+        .perfil-tag.online i { color: #20a477; font-size: 7px; }
+        .perfil-hero-date { position: relative; align-self: flex-start; padding: 8px 10px; background: #f8fafc; border: 1px solid var(--perfil-borda); border-radius: 10px; color: var(--perfil-suave); font-size: 10px; text-align: center; white-space: nowrap; }
+        .perfil-hero-date strong { display: block; color: var(--perfil-texto); font-size: 12px; margin-top: 3px; }
+        .perfil-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
+        .perfil-stat { padding: 19px; min-width: 0; }
+        .perfil-stat-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 18px; }
+        .perfil-stat-head span { color: var(--perfil-suave); font-size: 11px; font-weight: 500; }
+        .perfil-stat-icon { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: var(--perfil-azul-claro); color: var(--perfil-azul); }
+        .perfil-stat:nth-child(2) .perfil-stat-icon { background: #eaf8f1; color: var(--perfil-verde); }
+        .perfil-stat:nth-child(3) .perfil-stat-icon { background: #fff4e8; color: var(--perfil-laranja); }
+        .perfil-stat strong { font-size: 29px; font-weight: 700; letter-spacing: -.8px; line-height: 1; }
+        .perfil-stat small { display: block; margin-top: 9px; color: #929bad; font-size: 10px; }
+        .perfil-content-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(260px, .9fr); gap: 18px; align-items: stretch; }
+        .perfil-panel { padding: 23px; margin-bottom: 18px; min-width: 0; }
+        .perfil-panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 5px; }
+        .perfil-panel-title { display: flex; align-items: center; gap: 10px; }
+        .perfil-panel-title > i { color: var(--perfil-azul); font-size: 15px; }
+        .perfil-panel-title h3 { margin: 0; font-size: 14px; font-weight: 700; }
+        .perfil-panel-subtitle { color: var(--perfil-suave); font-size: 11px; margin: 0 0 21px; line-height: 1.6; }
+        .perfil-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .perfil-field { min-width: 0; }
+        .perfil-field label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 7px; color: #505b6d; }
+        .perfil-field input { box-sizing: border-box; width: 100%; min-height: 43px; border: 1px solid #dfe4ed; border-radius: 9px; background: #fbfcfe; padding: 10px 12px; color: var(--perfil-texto); font: 12px 'Poppins',sans-serif; outline: none; transition: border .18s, box-shadow .18s; }
+        .perfil-field input:focus { border-color: #80a5f3; box-shadow: 0 0 0 3px rgba(50,103,199,.09); background: #fff; }
+        .perfil-field input:disabled { color: #697487; background: #f4f6f9; }
+        .perfil-form-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+        .perfil-note { color: #8a94a5; font-size: 10px; line-height: 1.6; max-width: 300px; }
+        .perfil-button { display: inline-flex; gap: 8px; justify-content: center; align-items: center; padding: 11px 15px; border: 0; border-radius: 9px; background: var(--perfil-azul); color: white; font: 600 11px 'Poppins',sans-serif; cursor: pointer; transition: background .18s, transform .18s; }
+        .perfil-button:hover { background: var(--perfil-azul-escuro); transform: translateY(-1px); }
+        .perfil-button:disabled { opacity: .6; cursor: wait; transform: none; }
+        .perfil-message { display: none; margin: 0 0 16px; padding: 11px 13px; border-radius: 9px; font-size: 11px; line-height: 1.6; }
+        .perfil-message.show { display: block; }
+        .perfil-message.success { background: #eaf8f1; color: #176b50; border: 1px solid #d0efdf; }
+        .perfil-message.error { background: #fff0f0; color: #a63b3b; border: 1px solid #f5d3d3; }
+        .perfil-message.info { background: #edf4ff; color: #315da6; border: 1px solid #d7e5ff; }
+        .perfil-next { border: 1px solid #dbe6fb; background: linear-gradient(145deg,#fff,#f8faff); padding: 22px; margin-bottom: 18px; }
+        .perfil-next-label { display: inline-flex; align-items: center; gap: 6px; color: var(--perfil-azul); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; }
+        .perfil-next h3 { margin: 15px 0 8px; font-size: 16px; overflow-wrap: anywhere; }
+        .perfil-next p { color: var(--perfil-suave); font-size: 11px; margin: 0 0 15px; line-height: 1.7; }
+        .perfil-next-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+        .perfil-next-meta span { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: #566276; background: white; border: 1px solid var(--perfil-borda); padding: 7px 9px; border-radius: 8px; }
+        .perfil-progress-title { display: flex; justify-content: space-between; gap: 8px; margin: 17px 0 8px; font-size: 10px; color: var(--perfil-suave); }
+        .perfil-progress { height: 6px; background: #e9eef7; overflow: hidden; border-radius: 99px; }
+        .perfil-progress span { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg,#6b99ef,#3267c7); transition: width .3s; }
+        .perfil-quick-actions { display: grid; gap: 9px; }
+        .perfil-quick-link { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--perfil-borda); border-radius: 11px; color: var(--perfil-texto); text-decoration: none; transition: border .18s, background .18s; }
+        .perfil-quick-link:hover { border-color: #cbd9f5; background: #f8faff; }
+        .perfil-quick-icon { width: 35px; height: 35px; flex: 0 0 35px; display: grid; place-items: center; border-radius: 10px; background: #edf3ff; color: var(--perfil-azul); }
+        .perfil-quick-copy { flex: 1; min-width: 0; }
+        .perfil-quick-copy strong { display: block; font-size: 11px; }
+        .perfil-quick-copy small { display: block; color: var(--perfil-suave); font-size: 9px; margin-top: 3px; }
+        .perfil-quick-link > .fa-chevron-right { color: #9aa4b4; font-size: 10px; }
+        .perfil-history { width: 100%; border-collapse: collapse; }
+        .perfil-history th { text-align: left; padding: 10px 8px; color: #8a94a5; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--perfil-borda); }
+        .perfil-history td { padding: 13px 8px; font-size: 10px; border-bottom: 1px solid #f0f2f6; vertical-align: middle; }
+        .perfil-history tr:last-child td { border-bottom: 0; }
+        .perfil-history .history-name { font-size: 11px; font-weight: 600; overflow-wrap: anywhere; }
+        .perfil-status { display: inline-block; padding: 5px 7px; border-radius: 6px; font-size: 9px; font-weight: 600; white-space: nowrap; }
+        .perfil-status.agendada { color: #2d5eb7; background: #edf3ff; }
+        .perfil-status.concluida { color: #187556; background: #eaf8f1; }
+        .perfil-status.repor { color: #a65f15; background: #fff3e5; }
+        .perfil-empty { text-align: center; padding: 22px 10px; color: var(--perfil-suave); font-size: 11px; }
+        .perfil-empty i { display: block; color: #aab6ca; font-size: 25px; margin-bottom: 9px; }
+        .perfil-footer { color: #9aa3b2; text-align: center; font-size: 10px; padding: 10px 0 22px; }
+        @media (max-width: 1050px) { .perfil-layout { gap: 18px; } .perfil-content-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 850px) { .perfil-layout { flex-direction: column; } .menu-dash { width: 100%; min-width: 0; } .cont-menu-dash { display: flex; flex-wrap: wrap; gap: 5px; } .cont-menu-dash li { margin: 0; } .perfil-main { width: 100%; } }
+        @media (max-width: 560px) { .perfil-page { padding-top: 22px; } .perfil-page-heading { align-items: flex-start; } .perfil-refresh { padding: 9px; font-size: 0; } .perfil-refresh i { font-size: 13px; } .perfil-hero { padding: 18px; align-items: flex-start; gap: 13px; } .perfil-avatar { width: 58px; height: 58px; flex-basis: 58px; border-radius: 17px; font-size: 22px; } .perfil-identity h2 { font-size: 16px; } .perfil-hero-date { display: none; } .perfil-stats { gap: 9px; } .perfil-stat { padding: 13px 11px; } .perfil-stat-head { align-items: flex-start; flex-direction: column-reverse; margin-bottom: 12px; gap: 9px; } .perfil-stat-head span { font-size: 10px; } .perfil-stat strong { font-size: 24px; } .perfil-stat small { font-size: 9px; } .perfil-panel { padding: 17px; } .perfil-form-grid { grid-template-columns: 1fr; gap: 13px; } .perfil-history th:nth-child(3), .perfil-history td:nth-child(3) { display: none; } }
+    </style>
+</head>
+<body>
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo"><img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass"></div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="aulas.html">Agendar Aula</a></li>
+                <li><a href="#" id="btnSair" class="bt-age">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container perfil-page">
+    <div class="perfil-layout">
+        <aside class="menu-dash">
+            <h2>Olá, <span id="nomeSidebar">Aluno</span>!</h2>
+            <br>
+            <ul class="cont-menu-dash">
+                <li>
+                    <a href="dashA.html">
+                        <i class="fas fa-home"></i>
+                        Início
+                    </a>
+                </li>
+                <li>
+                    <a href="professores.html">
+                        <i class="fas fa-users"></i>
+                        Professores
+                    </a>
+                </li>
+                <li>
+                    <a href="aulas.html">
+                        <i class="fas fa-calendar-plus"></i>
+                        Agendar Reposição
+                    </a>
+                </li>
+                <li>
+                    <a href="perfil.html" class="escrita-menu-dash">
+                        <i class="fas fa-user"></i>
+                        Meu Perfil
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <section class="perfil-main">
+            <div class="perfil-page-heading">
+                <div>
+                    <div class="perfil-eyebrow">Minha conta</div>
+                    <h1>Meu perfil</h1>
+                    <p>Suas informações e seu progresso no Reclass.</p>
+                </div>
+                <button type="button" class="perfil-refresh" id="btnAtualizar"><i class="fas fa-rotate-right"></i> Atualizar dados</button>
+            </div>
+
+            <div id="mensagemGlobal" class="perfil-message" role="status" aria-live="polite"></div>
+
+            <section class="perfil-hero">
+                <div class="perfil-avatar-wrap">
+                    <div class="perfil-avatar" id="avatarBox">
+                        <span id="avatarInicial">…</span>
+                        <img id="avatarFoto" alt="Foto de perfil" hidden>
+                    </div>
+                    <div class="perfil-avatar-actions">
+                        <label class="perfil-avatar-change" id="btnEscolherFoto" for="inputFotoPerfil">
+                            <i class="fas fa-camera"></i> Trocar foto
+                        </label>
+                        <input type="file" id="inputFotoPerfil" accept="image/png,image/jpeg,image/webp" hidden>
+                        <button type="button" class="perfil-avatar-remove" id="btnRemoverFoto" hidden>
+                            <i class="fas fa-trash-can"></i> Remover
+                        </button>
+                    </div>
+                </div>
+                <div class="perfil-identity">
+                    <h2 id="nomeDestaque">Carregando perfil...</h2>
+                    <p id="emailDestaque">Buscando informações da conta</p>
+                    <div class="perfil-tags">
+                        <span class="perfil-tag role"><i class="fas fa-graduation-cap"></i> Aluno Reclass</span>
+                        <span class="perfil-tag online"><i class="fas fa-circle"></i> Conta conectada</span>
+                    </div>
+                </div>
+                <div class="perfil-hero-date"><i class="far fa-calendar"></i> Membro desde<strong id="membroDesde">—</strong></div>
+            </section>
+
+            <section class="perfil-stats">
+                <article class="perfil-stat">
+                    <div class="perfil-stat-head"><span>Aulas agendadas</span><span class="perfil-stat-icon"><i class="fas fa-calendar-check"></i></span></div>
+                    <strong id="totalAgendadas">—</strong><small>Próximas ou aguardando aula</small>
+                </article>
+                <article class="perfil-stat">
+                    <div class="perfil-stat-head"><span>Aulas concluídas</span><span class="perfil-stat-icon"><i class="fas fa-check-circle"></i></span></div>
+                    <strong id="totalConcluidas">—</strong><small>Reposições finalizadas</small>
+                </article>
+                <article class="perfil-stat">
+                    <div class="perfil-stat-head"><span>Aulas para repor</span><span class="perfil-stat-icon"><i class="fas fa-book-open"></i></span></div>
+                    <strong id="totalRepor">—</strong><small>Precisam de nova reposição</small>
+                </article>
+            </section>
+
+            <div class="perfil-content-grid">
+                <div>
+                    <section class="perfil-panel">
+                        <div class="perfil-panel-heading"><div class="perfil-panel-title"><i class="fas fa-user-gear"></i><h3>Informações pessoais</h3></div></div>
+                        <p class="perfil-panel-subtitle">Mantenha seus dados de cadastro atualizados.</p>
+                        <div id="mensagemFormulario" class="perfil-message" role="status" aria-live="polite"></div>
+                        <form id="formPerfil">
+                            <div class="perfil-form-grid">
+                                <div class="perfil-field"><label for="nome">Nome completo</label><input type="text" id="nome" name="nome" maxlength="150" required placeholder="Seu nome completo"></div>
+                                <div class="perfil-field"><label for="email">E-mail da conta</label><input type="email" id="email" name="email" maxlength="254" required placeholder="voce@exemplo.com"></div>
+                            </div>
+                            <div class="perfil-form-foot">
+                                <span class="perfil-note"><i class="fas fa-shield-halved"></i> Ao alterar o e-mail, o Supabase pode solicitar uma confirmação na caixa de entrada.</span>
+                                <button type="submit" class="perfil-button" id="btnSalvar"><i class="fas fa-floppy-disk"></i> Salvar alterações</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="perfil-panel">
+                        <div class="perfil-panel-heading"><div class="perfil-panel-title"><i class="fas fa-clock-rotate-left"></i><h3>Atividade recente</h3></div><span class="perfil-tag" id="totalHistorico">0 registros</span></div>
+                        <p class="perfil-panel-subtitle">Veja os agendamentos mais recentes da sua conta.</p>
+                        <div style="overflow-x:auto">
+                            <table class="perfil-history">
+                                <thead><tr><th>Aula</th><th>Data</th><th>Horário</th><th>Status</th></tr></thead>
+                                <tbody id="corpoHistorico"><tr><td colspan="4"><div class="perfil-empty"><i class="fas fa-spinner fa-spin"></i>Carregando suas aulas...</div></td></tr></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <div>
+                    <section class="perfil-next">
+                        <span class="perfil-next-label"><i class="fas fa-sparkles"></i> Sua próxima aula</span>
+                        <h3 id="proximaAulaTitulo">Vamos conferir sua agenda</h3>
+                        <p id="proximaAulaTexto">Estamos buscando seus próximos agendamentos.</p>
+                        <div class="perfil-next-meta" id="proximaAulaMeta"></div>
+                        <div class="perfil-progress-title"><span>Progresso das aulas</span><strong id="progressoTexto">0%</strong></div>
+                        <div class="perfil-progress"><span id="progressoBarra"></span></div>
+                    </section>
+
+                    <section class="perfil-panel">
+                        <div class="perfil-panel-heading"><div class="perfil-panel-title"><i class="fas fa-bolt"></i><h3>Acesso rápido</h3></div></div>
+                        <p class="perfil-panel-subtitle">Atalhos para as áreas mais usadas.</p>
+                        <div class="perfil-quick-actions">
+                            <a class="perfil-quick-link" href="aulas.html"><span class="perfil-quick-icon"><i class="fas fa-calendar-plus"></i></span><span class="perfil-quick-copy"><strong>Agendar reposição</strong><small>Encontre uma aula disponível</small></span><i class="fas fa-chevron-right"></i></a>
+                            <a class="perfil-quick-link" href="dashA.html"><span class="perfil-quick-icon"><i class="fas fa-chart-simple"></i></span><span class="perfil-quick-copy"><strong>Meu painel</strong><small>Confira seu resumo de aulas</small></span><i class="fas fa-chevron-right"></i></a>
+                            <a class="perfil-quick-link" href="professores.html"><span class="perfil-quick-icon"><i class="fas fa-chalkboard-user"></i></span><span class="perfil-quick-copy"><strong>Professores</strong><small>Consulte a lista de professores</small></span><i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="perfil-footer"><div class="container">&copy; 2026 Reclass — Sistema de Reposição de Aulas</div></footer>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const $ = (id) => document.getElementById(id);
+    let usuarioAtual = null;
+    let perfilAtual = null;
+    let emailAtual = '';
+    let agendamentosAtuais = [];
+
+
+    const BUCKET_AVATARES = 'avatars';
+    const LIMITE_FOTO_BYTES = 5 * 1024 * 1024;
+
+    function definirAvatar(url) {
+        const foto = $('avatarFoto');
+        const iniciaisEl = $('avatarInicial');
+        if (url) {
+            foto.src = url;
+            foto.hidden = false;
+            iniciaisEl.hidden = true;
+        } else {
+            foto.removeAttribute('src');
+            foto.hidden = true;
+            iniciaisEl.hidden = false;
+        }
+        $('btnRemoverFoto').hidden = !url;
+    }
+
+    function caminhoDoAvatar(url) {
+        if (!url || !usuarioAtual) return null;
+        try {
+            const caminho = new URL(url).pathname;
+            const marcador = `/storage/v1/object/public/${BUCKET_AVATARES}/`;
+            const pos = caminho.indexOf(marcador);
+            if (pos === -1) return null;
+            const arquivo = decodeURIComponent(caminho.slice(pos + marcador.length));
+            return arquivo.startsWith(`${usuarioAtual.id}/`) ? arquivo : null;
+        } catch {
+            return null;
+        }
+    }
+
+    async function apagarArquivoAvatar(url) {
+        const caminho = caminhoDoAvatar(url);
+        if (!caminho) return;
+        const { error } = await supabase.storage.from(BUCKET_AVATARES).remove([caminho]);
+        if (error) console.warn('Não foi possível remover a foto antiga:', error.message);
+    }
+
+    $('inputFotoPerfil').addEventListener('change', async (event) => {
+        const arquivo = event.target.files?.[0];
+        if (!arquivo) return;
+        event.target.value = '';
+
+        if (!usuarioAtual || !perfilAtual) {
+            mostrarMensagem($('mensagemGlobal'), 'Carregue seu perfil antes de trocar a foto.', 'error');
+            return;
+        }
+        const tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!tiposPermitidos.includes(arquivo.type)) {
+            mostrarMensagem($('mensagemGlobal'), 'Escolha uma imagem JPG, PNG ou WEBP.', 'error');
+            return;
+        }
+        if (arquivo.size > LIMITE_FOTO_BYTES) {
+            mostrarMensagem($('mensagemGlobal'), 'A foto deve ter no máximo 5 MB.', 'error');
+            return;
+        }
+
+        const label = $('btnEscolherFoto');
+        const botaoRemover = $('btnRemoverFoto');
+        label.classList.add('disabled');
+        label.style.pointerEvents = 'none';
+        botaoRemover.disabled = true;
+        const textoOriginal = label.innerHTML;
+        label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        limparMensagem($('mensagemGlobal'));
+
+        let caminhoNovo = null;
+        try {
+            const extensao = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' })[arquivo.type];
+            const idArquivo = (globalThis.crypto && typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            caminhoNovo = `${usuarioAtual.id}/${idArquivo}.${extensao}`;
+            const { error: erroUpload } = await supabase.storage
+                .from(BUCKET_AVATARES)
+                .upload(caminhoNovo, arquivo, {
+                    cacheControl: '3600',
+                    contentType: arquivo.type,
+                    upsert: false
+                });
+            if (erroUpload) throw erroUpload;
+
+            const { data: urlData } = supabase.storage
+                .from(BUCKET_AVATARES)
+                .getPublicUrl(caminhoNovo);
+            const novaUrl = urlData.publicUrl;
+
+            const { data: perfilAtualizado, error: erroSalvar } = await supabase
+                .from('profiles')
+                .update({ avatar_url: novaUrl })
+                .eq('id', usuarioAtual.id)
+                .select('id, avatar_url')
+                .maybeSingle();
+            if (erroSalvar) throw erroSalvar;
+            if (!perfilAtualizado) {
+                throw new Error('O Supabase não permitiu atualizar a coluna avatar_url do seu perfil. Execute o arquivo avatar_fix.sql no SQL Editor e tente novamente.');
+            }
+
+            const urlAntiga = perfilAtual.avatar_url;
+            perfilAtual.avatar_url = novaUrl;
+            definirAvatar(novaUrl);
+            await apagarArquivoAvatar(urlAntiga);
+            mostrarMensagem($('mensagemGlobal'), 'Foto de perfil atualizada com sucesso!', 'success');
+        } catch (erro) {
+            if (caminhoNovo) {
+                const { error: erroLimpeza } = await supabase.storage.from(BUCKET_AVATARES).remove([caminhoNovo]);
+                if (erroLimpeza) console.warn(erroLimpeza.message);
+            }
+            console.error('Erro ao atualizar foto:', erro);
+            mostrarMensagem($('mensagemGlobal'), 'Não foi possível trocar a foto: ' + (erro.message || 'Confira as permissões do Supabase e o bucket avatars.'), 'error');
+        } finally {
+            label.innerHTML = textoOriginal;
+            label.classList.remove('disabled');
+            label.style.pointerEvents = '';
+            botaoRemover.disabled = false;
+        }
+    });
+
+    $('btnRemoverFoto').addEventListener('click', async () => {
+        if (!usuarioAtual || !perfilAtual?.avatar_url) return;
+        const botao = $('btnRemoverFoto');
+        botao.disabled = true;
+        try {
+            const urlAntiga = perfilAtual.avatar_url;
+            const { data: perfilAtualizado, error } = await supabase
+                .from('profiles')
+                .update({ avatar_url: null })
+                .eq('id', usuarioAtual.id)
+                .select('id')
+                .maybeSingle();
+            if (error) throw error;
+            if (!perfilAtualizado) {
+                throw new Error('O Supabase não permitiu atualizar seu perfil. Execute o arquivo avatar_fix.sql no SQL Editor e tente novamente.');
+            }
+            perfilAtual.avatar_url = null;
+            definirAvatar(null);
+            await apagarArquivoAvatar(urlAntiga);
+            mostrarMensagem($('mensagemGlobal'), 'Foto removida. Suas iniciais serão exibidas novamente.', 'success');
+        } catch (erro) {
+            console.error('Erro ao remover foto:', erro);
+            mostrarMensagem($('mensagemGlobal'), 'Não foi possível remover a foto. ' + (erro.message || ''), 'error');
+        } finally {
+            botao.disabled = false;
+        }
+    });
+
+    function mostrarMensagem(elemento, texto, tipo = 'info') {
+        elemento.textContent = texto;
+        elemento.className = `perfil-message show ${tipo}`;
+    }
+
+    function limparMensagem(elemento) {
+        elemento.textContent = '';
+        elemento.className = 'perfil-message';
+    }
+
+    function formatarData(data) {
+        if (!data) return '—';
+        const partes = String(data).split('-');
+        if (partes.length !== 3) return String(data);
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function formatarHorario(horario) {
+        if (!horario) return '—';
+        const texto = String(horario);
+        return texto.length >= 5 ? texto.slice(0, 5) : texto;
+    }
+
+    function iniciais(nome) {
+        const partes = String(nome || 'Aluno').trim().split(/\s+/).filter(Boolean);
+        return partes.slice(0, 2).map(p => p.charAt(0).toUpperCase()).join('') || 'A';
+    }
+
+    function statusLabel(status) {
+        if (status === 'concluida') return ['Concluída', 'concluida'];
+        if (status === 'repor') return ['Para repor', 'repor'];
+        return ['Agendada', 'agendada'];
+    }
+
+    function renderizarHistorico(lista) {
+        const corpo = $('corpoHistorico');
+        $('totalHistorico').textContent = `${lista.length} ${lista.length === 1 ? 'registro' : 'registros'}`;
+
+        if (!lista.length) {
+            corpo.innerHTML = '<tr><td colspan="4"><div class="perfil-empty"><i class="far fa-calendar-xmark"></i>Você ainda não possui agendamentos.<br>Suas próximas aulas aparecerão aqui.</div></td></tr>';
+            return;
+        }
+
+        corpo.innerHTML = lista.slice().sort((a, b) => {
+            const da = `${a.data || ''} ${a.horario || ''}`;
+            const db = `${b.data || ''} ${b.horario || ''}`;
+            return db.localeCompare(da);
+        }).slice(0, 5).map(aula => {
+            const [label, classe] = statusLabel(aula.status);
+            return `<tr>
+                <td><span class="history-name">${escaparHtml(aula.aula || 'Aula')}</span></td>
+                <td>${formatarData(aula.data)}</td>
+                <td>${formatarHorario(aula.horario)}</td>
+                <td><span class="perfil-status ${classe}">${label}</span></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function escaparHtml(valor) {
+        return String(valor ?? '').replace(/[&<>"']/g, caractere => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[caractere]);
+    }
+
+    function renderizarProximaAula(lista) {
+        const agora = new Date();
+        const futuras = lista.filter(a => a.status === 'agendada' && a.data && new Date(`${a.data}T${String(a.horario || '00:00').slice(0,5)}:00`) >= agora)
+            .sort((a, b) => `${a.data} ${a.horario}`.localeCompare(`${b.data} ${b.horario}`));
+        const proxima = futuras[0];
+        const meta = $('proximaAulaMeta');
+        meta.innerHTML = '';
+
+        if (!proxima) {
+            $('proximaAulaTitulo').textContent = 'Nenhuma aula próxima';
+            $('proximaAulaTexto').textContent = 'Quando você tiver um agendamento futuro confirmado, os detalhes aparecerão aqui.';
+            meta.innerHTML = '<span><i class="far fa-calendar"></i> Agenda livre</span>';
+            return;
+        }
+
+        $('proximaAulaTitulo').textContent = proxima.aula || 'Aula de reposição';
+        $('proximaAulaTexto').textContent = 'Este é o próximo compromisso marcado na sua agenda.';
+        meta.innerHTML = `<span><i class="far fa-calendar"></i>${formatarData(proxima.data)}</span><span><i class="far fa-clock"></i>${formatarHorario(proxima.horario)}</span>`;
+    }
+
+    async function carregarPerfil() {
+        limparMensagem($('mensagemGlobal'));
+        $('nomeDestaque').textContent = 'Carregando perfil...';
+
+        const { data: sessaoData, error: erroSessao } = await supabase.auth.getSession();
+        if (erroSessao) throw erroSessao;
+        const sessao = sessaoData.session;
+
+        if (!sessao) {
+            window.location.replace('login.html');
+            return;
+        }
+
+        usuarioAtual = sessao.user;
+        emailAtual = usuarioAtual.email || '';
+
+        const { data: perfil, error: erroPerfil } = await supabase
+            .from('profiles')
+            .select('id, nome, tipo_usuario, created_at, avatar_url')
+            .eq('id', usuarioAtual.id)
+            .single();
+
+        if (erroPerfil) throw erroPerfil;
+        if (!perfil || perfil.tipo_usuario !== 'aluno') {
+            mostrarMensagem($('mensagemGlobal'), 'Esta página é exclusiva para alunos.', 'error');
+            return;
+        }
+        perfilAtual = perfil;
+
+        $('nomeDestaque').textContent = perfil.nome || 'Aluno Reclass';
+        $('nomeSidebar').textContent = perfil.nome || 'Aluno';
+        $('emailDestaque').textContent = emailAtual;
+        $('avatarInicial').textContent = iniciais(perfil.nome);
+        definirAvatar(perfil.avatar_url || null);
+        $('nome').value = perfil.nome || '';
+        $('email').value = emailAtual;
+        $('membroDesde').textContent = usuarioAtual.created_at
+            ? new Date(usuarioAtual.created_at).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })
+            : '—';
+
+        const { data: agendamentos, error: erroAulas } = await supabase
+            .from('agendamentos')
+            .select('id, aula, data, horario, status, created_at')
+            .eq('id_aluno', usuarioAtual.id)
+            .order('data', { ascending: true })
+            .order('horario', { ascending: true });
+
+        if (erroAulas) throw erroAulas;
+        agendamentosAtuais = agendamentos || [];
+
+        const agendadas = agendamentosAtuais.filter(a => a.status === 'agendada').length;
+        const concluidas = agendamentosAtuais.filter(a => a.status === 'concluida').length;
+        const repor = agendamentosAtuais.filter(a => a.status === 'repor').length;
+        $('totalAgendadas').textContent = agendadas;
+        $('totalConcluidas').textContent = concluidas;
+        $('totalRepor').textContent = repor;
+        const percentagem = agendamentosAtuais.length ? Math.round((concluidas / agendamentosAtuais.length) * 100) : 0;
+        $('progressoTexto').textContent = `${percentagem}%`;
+        $('progressoBarra').style.width = `${percentagem}%`;
+
+        renderizarHistorico(agendamentosAtuais);
+        renderizarProximaAula(agendamentosAtuais);
+    }
+
+    $('formPerfil').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const botao = $('btnSalvar');
+        limparMensagem($('mensagemFormulario'));
+        const nome = $('nome').value.trim();
+        const email = $('email').value.trim();
+
+        if (!nome || !email) {
+            mostrarMensagem($('mensagemFormulario'), 'Preencha o nome e o e-mail.', 'error');
+            return;
+        }
+
+        if (!usuarioAtual) {
+            mostrarMensagem($('mensagemFormulario'), 'Sua sessão expirou. Entre novamente.', 'error');
+            return;
+        }
+
+        botao.disabled = true;
+        botao.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+        try {
+            const { error: erroNome } = await supabase
+                .from('profiles')
+                .update({ nome })
+                .eq('id', usuarioAtual.id);
+            if (erroNome) throw erroNome;
+
+            const alterouEmail = email.toLowerCase() !== String(emailAtual).toLowerCase();
+            const atualizacaoAuth = { data: { nome } };
+            if (alterouEmail) atualizacaoAuth.email = email;
+
+            const { error: erroAuth } = await supabase.auth.updateUser(atualizacaoAuth);
+            if (erroAuth) {
+                await carregarPerfil();
+                throw new Error('O nome foi salvo, mas não foi possível atualizar a conta de autenticação: ' + erroAuth.message);
+            }
+
+            await carregarPerfil();
+            if (alterouEmail) {
+                mostrarMensagem($('mensagemFormulario'), 'Nome atualizado. O Supabase pode ter enviado uma confirmação para concluir a alteração do e-mail. Confira sua caixa de entrada.', 'success');
+            } else {
+                mostrarMensagem($('mensagemFormulario'), 'Seus dados foram atualizados com sucesso!', 'success');
+            }
+        } catch (erro) {
+            console.error('Erro ao atualizar perfil:', erro);
+            mostrarMensagem($('mensagemFormulario'), erro.message || 'Não foi possível atualizar seus dados. Confira as permissões do Supabase.', 'error');
+        } finally {
+            botao.disabled = false;
+            botao.innerHTML = '<i class="fas fa-floppy-disk"></i> Salvar alterações';
+        }
+    });
+
+    $('btnAtualizar').addEventListener('click', async () => {
+        const botao = $('btnAtualizar');
+        botao.disabled = true;
+        try {
+            await carregarPerfil();
+            mostrarMensagem($('mensagemGlobal'), 'Dados atualizados.', 'success');
+        } catch (erro) {
+            console.error(erro);
+            mostrarMensagem($('mensagemGlobal'), erro.message || 'Não foi possível atualizar os dados.', 'error');
+        } finally {
+            botao.disabled = false;
+        }
+    });
+
+    $('btnSair').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            mostrarMensagem($('mensagemGlobal'), 'Não foi possível encerrar a sessão: ' + error.message, 'error');
+            return;
+        }
+        window.location.href = 'login.html';
+    });
+
+    try {
+        await carregarPerfil();
+    } catch (erro) {
+        console.error('Erro ao carregar perfil:', erro);
+        mostrarMensagem($('mensagemGlobal'), 'Não foi possível carregar seu perfil. ' + (erro.message || 'Verifique a conexão, as tabelas e as políticas do Supabase.'), 'error');
+        $('nomeDestaque').textContent = 'Não foi possível carregar';
+        $('corpoHistorico').innerHTML = `<tr><td colspan="4"><div class="perfil-empty"><i class="fas fa-triangle-exclamation"></i>${escaparHtml(erro.message || 'Erro ao consultar o Supabase.')}</div></td></tr>`;
+    }
+</script>
+</body>
+</html>

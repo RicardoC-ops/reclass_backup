@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios | Reclass</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ php_url }}/style.css">
+    <link rel="shortcut icon" href="{{ php_url }}/IMGS/logoico.ico" type="image/x-icon">
+
+    <style>
+        .sessa-dashP { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 25px; }
+        .valor-dashP { font-size: 30px; font-weight: 700; }
+        .grafico-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px; }
+        .grafico-box { min-width: 0; }
+        .grafico-box h3 { margin-bottom: 15px; }
+        .grafico-box canvas { max-height: 280px; }
+        .tabela-wrap { overflow-x: auto; }
+        .tabela-wrap table { width: 100%; border-collapse: collapse; min-width: 700px; }
+        .tabela-wrap th, .tabela-wrap td { padding: 12px 14px; text-align: left; }
+        .barra { background: rgba(0,0,0,0.08); border-radius: 20px; height: 10px; width: 120px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        .barra span { display: block; height: 100%; background: var(--primary-color, #1a337a); }
+        .vazio { opacity: 0.6; font-style: italic; }
+        .tag-py { font-size: 12px; opacity: 0.6; margin-top: 4px; }
+        @media (max-width: 950px) { .sessa-dashP, .grafico-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo">
+            <img src="{{ php_url }}/IMGS/reclasslogo.jpeg" alt="Wiz Logo"
+                 onerror="this.src='https://via.placeholder.com/150x50?text=Wiz+Logo'">
+        </div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="{{ php_url }}/index.html">Início</a></li>
+                <li><a href="{{ php_url }}/login.html" class="bt-age">Sair do Admin</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="paddashP">
+
+        <aside class="menu-dash">
+            <h3>Painel Administrador</h3>
+            <ul class="cont-menu-dash">
+                <li><a href="{{ php_url }}/dashP.php"><i class="fas fa-chart-line"></i> Início</a></li>
+                <li><a href="{{ php_url }}/alunos.php"><i class="fas fa-users"></i> Alunos</a></li>
+                <li><a href="{{ php_url }}/tdsaulas.php"><i class="fas fa-calendar-alt"></i> Todas as Aulas</a></li>
+                <li><a href="{{ php_url }}/maisaula.php"><i class="fas fa-plus-circle"></i> Abrir Nova Aula</a></li>
+                <li><a href="/" class="escrita-menu-dash"><i class="fas fa-chart-pie"></i> Relatórios</a></li>
+                <li><a href="{{ php_url }}/perfilP.php"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            </ul>
+        </aside>
+
+        <section class="content">
+
+            <!-- CARDS -->
+            <div class="sessa-dashP">
+                <div class="card-dashP">
+                    <h4>Aulas Criadas</h4>
+                    <div class="valor-dashP">{{ total_aulas }}</div>
+                </div>
+                <div class="card-dashP">
+                    <h4>Agendamentos</h4>
+                    <div class="valor-dashP">{{ total_agendamentos }}</div>
+                </div>
+                <div class="card-dashP">
+                    <h4>Ocupação das Vagas</h4>
+                    <div class="valor-dashP">{{ taxa_ocupacao }}%</div>
+                </div>
+                <div class="card-dashP">
+                    <h4>Vagas Oferecidas</h4>
+                    <div class="valor-dashP">{{ total_vagas }}</div>
+                </div>
+                <div class="card-dashP">
+                    <h4>Aulas sem Agendamento</h4>
+                    <div class="valor-dashP">{{ aulas_vazias }}</div>
+                </div>
+                <div class="card-dashP">
+                    <h4>Alunos Cadastrados</h4>
+                    <div class="valor-dashP">{{ total_alunos }}</div>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS -->
+            <div class="grafico-grid">
+                <div class="sessad-dashP grafico-box">
+                    <h3>Agendamentos por Status</h3>
+                    {% if status_valores %}
+                        <canvas id="graficoStatus"></canvas>
+                    {% else %}
+                        <p class="vazio">Sem dados ainda.</p>
+                    {% endif %}
+                </div>
+
+                <div class="sessad-dashP grafico-box">
+                    <h3>Agendamentos por Unidade</h3>
+                    {% if unidade_valores %}
+                        <canvas id="graficoUnidade"></canvas>
+                    {% else %}
+                        <p class="vazio">Sem dados ainda.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="sessad-dashP grafico-box" style="margin-bottom: 25px;">
+                <h3>Agendamentos por Mês</h3>
+                {% if mes_valores %}
+                    <canvas id="graficoMes"></canvas>
+                {% else %}
+                    <p class="vazio">Sem dados ainda.</p>
+                {% endif %}
+            </div>
+
+            <!-- RANKING DE AULAS -->
+            <div class="sessad-dashP">
+                <h3 style="margin-bottom: 15px;">Ocupação por Aula</h3>
+                <div class="tabela-wrap">
+                    {% if aulas %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aula</th>
+                                <th>Data</th>
+                                <th>Horário</th>
+                                <th>Unidade</th>
+                                <th>Ocupação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for a in aulas %}
+                            <tr>
+                                <td>{{ a.titulo }}</td>
+                                <td>{{ a.data_fmt }}</td>
+                                <td>{{ a.hora_fmt }}</td>
+                                <td>{{ a.unidade }}</td>
+                                <td>
+                                    <span class="barra"><span style="width: {{ a.percentual }}%"></span></span>
+                                    {{ a.ocupadas }} / {{ a.vagas }} ({{ a.percentual }}%)
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <p class="vazio">Nenhuma aula criada ainda.</p>
+                    {% endif %}
+                </div>
+                <p class="tag-py"><i class="fab fa-python"></i> Página gerada em Python (Flask)</p>
+            </div>
+
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    const cores = ['#1a337a', '#2ecc71', '#e67e22', '#e74c3c', '#9b59b6', '#16a085'];
+
+    {% if status_valores %}
+    new Chart(document.getElementById('graficoStatus'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ status_labels | tojson }},
+            datasets: [{ data: {{ status_valores | tojson }}, backgroundColor: cores }]
+        }
+    });
+    {% endif %}
+
+    {% if unidade_valores %}
+    new Chart(document.getElementById('graficoUnidade'), {
+        type: 'bar',
+        data: {
+            labels: {{ unidade_labels | tojson }},
+            datasets: [{ label: 'Agendamentos', data: {{ unidade_valores | tojson }}, backgroundColor: cores[0] }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    {% endif %}
+
+    {% if mes_valores %}
+    new Chart(document.getElementById('graficoMes'), {
+        type: 'line',
+        data: {
+            labels: {{ mes_labels | tojson }},
+            datasets: [{ label: 'Agendamentos', data: {{ mes_valores | tojson }}, borderColor: cores[0], backgroundColor: cores[0], tension: 0.3 }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+    {% endif %}
+</script>
+
+</body>
+</html>

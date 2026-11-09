@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todas as Aulas | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+
+    <style>
+        .paddashP { display:flex; gap:30px; padding:40px 0; align-items:flex-start; }
+        .content { flex:1; min-width:0; }
+        .sessad-dashP { margin-bottom:28px; overflow:hidden; }
+        .titulo-secao { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+        .titulo-secao h3 { margin:0; font-size:18px; font-weight:600; }
+        .tabela-container { width:100%; overflow-x:auto; }
+        .sessad-dashP table { width:100%; border-collapse:separate; border-spacing:0; min-width:650px; }
+        .sessad-dashP thead th { padding:15px 18px; text-align:left; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+        .sessad-dashP tbody td { padding:16px 18px; font-size:13px; vertical-align:middle; }
+        .sessad-dashP tbody tr { transition:background .18s ease; }
+        .sessad-dashP tbody tr:hover { background:rgba(50,103,199,.035); }
+        .aluno-info { display:flex; align-items:center; gap:10px; min-width:150px; }
+        .aluno-avatar { width:35px; height:35px; border-radius:50%; background:#eef4ff; color:#3267c7; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+        .aluno-nome { font-weight:500; }
+        .nome-aula { font-weight:600; }
+        .info-aula { display:flex; align-items:center; gap:8px; white-space:nowrap; }
+        .info-aula i { font-size:13px; color:#7a8698; }
+        .status-agendada, .status-concluida, .status-repor { display:inline-flex; align-items:center; gap:7px; padding:6px 11px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+        .status-agendada { background:#eef4ff; color:#3267c7; }
+        .status-concluida { background:#eaf8f1; color:#187556; }
+        .status-repor { background:#fff3e5; color:#a65f15; }
+        .sem-resultados { text-align:center; padding:38px 20px; color:#6b7280; }
+        .sem-resultados i { display:block; font-size:33px; margin-bottom:12px; color:#aab6ca; }
+        .sem-resultados p { margin:0; font-size:13px; }
+        .mensagem-painel { display:none; margin-bottom:18px; padding:13px 16px; border-radius:8px; font-size:13px; line-height:1.6; }
+        .mensagem-painel.visivel { display:block; }
+        .mensagem-painel.erro { background:#fff0f0; border:1px solid #f5d3d3; color:#a63b3b; }
+        .mensagem-painel.info { background:#edf4ff; border:1px solid #d7e5ff; color:#315da6; }
+        .contador-registros { margin-left:auto; padding:5px 9px; border-radius:7px; background:#eef4ff; color:#3267c7; font-size:11px; font-weight:600; }
+        @media(max-width:850px) { .paddashP { flex-direction:column; } .menu-dash { width:100%; min-width:0; } .cont-menu-dash { display:flex; flex-wrap:wrap; gap:5px; } .cont-menu-dash li { margin:0; } .content { width:100%; } }
+        @media(max-width:600px) { .sessad-dashP { padding:18px; } .sessad-dashP tbody td { padding:13px 12px; } }
+    </style>
+</head>
+<body>
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo"><img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass"></div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="maisaula.html">Abrir Nova Aula</a></li>
+                <li><a href="index.html" id="btnSair" class="bt-age">Sair do Admin</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="paddashP">
+        <aside class="menu-dash">
+            <h3>Painel Administrador</h3>
+            <ul class="cont-menu-dash">
+                <li><a href="dashP.html"><i class="fas fa-chart-line"></i> Início</a></li>
+                <li><a href="alunos.html"><i class="fas fa-users"></i> Alunos</a></li>
+                <li><a href="tdsaulas.html" class="escrita-menu-dash"><i class="fas fa-calendar-alt"></i> Todas as Aulas</a></li>
+                <li><a href="maisaula.html"><i class="fas fa-plus-circle"></i> Abrir Nova Aula</a></li>
+                <li><a href="perfilP.html"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            </ul>
+        </aside>
+
+        <section class="content">
+            <p id="mensagemPainel" class="mensagem-painel" role="status" aria-live="polite"></p>
+
+            <div class="sessad-dashP">
+                <div class="titulo-secao">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Aulas Criadas</h3>
+                    <span id="contadorAulas" class="contador-registros">0 aulas</span>
+                </div>
+                <div class="tabela-container">
+                    <table>
+                        <thead><tr><th>Aula</th><th>Data</th><th>Horário</th><th>Unidade</th><th>Vagas</th><th>Observações</th></tr></thead>
+                        <tbody id="corpoAulas"><tr><td colspan="6"><div class="sem-resultados"><i class="fas fa-spinner fa-spin"></i>Carregando aulas...</div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="sessad-dashP">
+                <div class="titulo-secao">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Agendamentos dos Alunos</h3>
+                    <span id="contadorAgendamentos" class="contador-registros">0 registros</span>
+                </div>
+                <div class="tabela-container">
+                    <table>
+                        <thead><tr><th>Aluno</th><th>Aula</th><th>Data</th><th>Horário</th><th>Status</th></tr></thead>
+                        <tbody id="corpoAgendamentos"><tr><td colspan="5"><div class="sem-resultados"><i class="fas fa-spinner fa-spin"></i>Carregando agendamentos...</div></td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer"><div class="container"><p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p></div></footer>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const $ = id => document.getElementById(id);
+
+    function escapar(valor) {
+        return String(valor ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    function formatarData(valor) {
+        if (!valor) return '—';
+        const partes = String(valor).split('-');
+        return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : escapar(valor);
+    }
+
+    function formatarHorario(valor) {
+        return valor ? escapar(String(valor).slice(0, 5)) : '—';
+    }
+
+    function normalizarHorario(valor) {
+        return String(valor || '').slice(0, 5);
+    }
+
+    function exibirErro(texto) {
+        $('mensagemPainel').textContent = texto;
+        $('mensagemPainel').className = 'mensagem-painel visivel erro';
+    }
+
+    function statusHtml(status) {
+        if (status === 'concluida') return '<span class="status-concluida">Concluída</span>';
+        if (status === 'repor') return '<span class="status-repor">Para repor</span>';
+        return '<span class="status-agendada">Agendada</span>';
+    }
+
+    function mostrarVazio(tbodyId, colspan, mensagem) {
+        $(tbodyId).innerHTML = `<tr><td colspan="${colspan}"><div class="sem-resultados"><i class="far fa-calendar-times"></i><p>${escapar(mensagem)}</p></div></td></tr>`;
+    }
+
+    async function inicializar() {
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) {
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        const usuario = authData.user;
+        const { data: perfil, error: perfilError } = await supabase
+            .from('profiles')
+            .select('nome, tipo_usuario')
+            .eq('id', usuario.id)
+            .single();
+
+        if (perfilError || !perfil || perfil.tipo_usuario !== 'professor') {
+            await supabase.auth.signOut();
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        $('mensagemPainel').className = 'mensagem-painel';
+
+        // Buscar aulas criadas. A tabela esperada contém titulo, data,
+        // horario, unidade, vagas e observacoes.
+        const { data: aulas, error: erroAulas } = await supabase
+            .from('aulas')
+            .select('id, titulo, data, horario, unidade, vagas, observacoes')
+            .order('id', { ascending: false });
+
+        if (erroAulas) {
+            mostrarVazio('corpoAulas', 6, 'Não foi possível carregar as aulas. Confira se a tabela aulas existe no Supabase e se suas permissões estão configuradas.');
+            console.error('Erro ao consultar aulas:', erroAulas);
+            $('contadorAulas').textContent = '—';
+        } else {
+            const listaAulas = aulas || [];
+            $('contadorAulas').textContent = `${listaAulas.length} ${listaAulas.length === 1 ? 'aula' : 'aulas'}`;
+
+            if (!listaAulas.length) {
+                mostrarVazio('corpoAulas', 6, 'Nenhuma aula foi criada ainda.');
+            } else {
+                // O esquema antigo contava ocupações comparando título, data e horário.
+                const { data: agendamentosParaVagas, error: erroVagas } = await supabase
+                    .from('agendamentos')
+                    .select('aula, data, horario, status');
+
+                if (erroVagas) console.error('Não foi possível calcular as vagas ocupadas:', erroVagas);
+                const ocupacoes = agendamentosParaVagas || [];
+
+                $('corpoAulas').innerHTML = listaAulas.map(aula => {
+                    const ocupadas = ocupacoes.filter(g =>
+                        g.status === 'agendada' &&
+                        String(g.aula || '') === String(aula.titulo || '') &&
+                        String(g.data || '') === String(aula.data || '') &&
+                        normalizarHorario(g.horario) === normalizarHorario(aula.horario)
+                    ).length;
+
+                    return `<tr>
+                        <td><span class="nome-aula">${escapar(aula.titulo || 'Aula')}</span></td>
+                        <td><span class="info-aula"><i class="far fa-calendar"></i>${formatarData(aula.data)}</span></td>
+                        <td><span class="info-aula"><i class="far fa-clock"></i>${formatarHorario(aula.horario)}</span></td>
+                        <td>${escapar(aula.unidade || '—')}</td>
+                        <td>${ocupadas} / ${Number(aula.vagas) || 0}</td>
+                        <td>${escapar(aula.observacoes || '—')}</td>
+                    </tr>`;
+                }).join('');
+            }
+        }
+
+        // Primeiro carregar os agendamentos; depois obter os perfis dos alunos.
+        const { data: agendamentos, error: erroAgendamentos } = await supabase
+            .from('agendamentos')
+            .select('id, id_aluno, aula, data, horario, status')
+            .order('data', { ascending: true })
+            .order('horario', { ascending: true });
+
+        if (erroAgendamentos) {
+            mostrarVazio('corpoAgendamentos', 5, 'Não foi possível carregar os agendamentos. Confira as permissões da tabela agendamentos.');
+            $('contadorAgendamentos').textContent = '—';
+            console.error('Erro ao consultar agendamentos:', erroAgendamentos);
+            return;
+        }
+
+        const listaAgendamentos = agendamentos || [];
+        $('contadorAgendamentos').textContent = `${listaAgendamentos.length} ${listaAgendamentos.length === 1 ? 'registro' : 'registros'}`;
+
+        if (!listaAgendamentos.length) {
+            mostrarVazio('corpoAgendamentos', 5, 'Nenhum aluno agendou uma aula ainda.');
+            return;
+        }
+
+        const idsAlunos = [...new Set(listaAgendamentos.map(a => a.id_aluno).filter(Boolean))];
+        let perfisAlunos = [];
+        if (idsAlunos.length) {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, nome, tipo_usuario')
+                .in('id', idsAlunos);
+
+            if (error) {
+                console.error('Erro ao consultar nomes dos alunos:', error);
+                mostrarErro('Os agendamentos foram carregados, mas não foi possível buscar os nomes dos alunos. Confira as políticas de leitura da tabela profiles.');
+            } else {
+                perfisAlunos = data || [];
+            }
+        }
+
+        const nomesPorId = new Map(perfisAlunos.map(p => [String(p.id), p.nome || 'Aluno']));
+
+        $('corpoAgendamentos').innerHTML = listaAgendamentos.map(agendamento => {
+            const nomeAluno = nomesPorId.get(String(agendamento.id_aluno)) || 'Aluno';
+            return `<tr>
+                <td><div class="aluno-info"><div class="aluno-avatar"><i class="fas fa-user"></i></div><span class="aluno-nome">${escapar(nomeAluno)}</span></div></td>
+                <td><span class="nome-aula">${escapar(agendamento.aula || 'Aula')}</span></td>
+                <td><span class="info-aula"><i class="far fa-calendar"></i>${formatarData(agendamento.data)}</span></td>
+                <td><span class="info-aula"><i class="far fa-clock"></i>${formatarHorario(agendamento.horario)}</span></td>
+                <td>${statusHtml(agendamento.status)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    $('btnSair').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) console.error('Erro ao sair:', error);
+        window.location.href = 'index.html';
+    });
+
+    inicializar().catch(erro => {
+        console.error('Erro ao carregar a página:', erro);
+        exibirErro('Não foi possível carregar a página. Confira a conexão com o Supabase e as permissões das tabelas. ' + (erro.message || ''));
+        mostrarVazio('corpoAulas', 6, 'Erro ao carregar aulas.');
+        mostrarVazio('corpoAgendamentos', 5, 'Erro ao carregar agendamentos.');
+    });
+</script>
+</body>
+</html>

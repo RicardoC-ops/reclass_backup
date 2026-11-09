@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel do Professor | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+
+
+    <style>
+
+        /* ==============================
+           ORGANIZAÇÃO DO DASHBOARD
+           ============================== */
+
+        .paddashP {
+            align-items: flex-start;
+        }
+
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #mensagemPainel {
+            margin: 0 0 16px;
+            font-size: 14px;
+        }
+
+        #mensagemPainel.erro { color: #b42318; }
+
+        .sem-agendamentos {
+            text-align: center;
+            padding: 28px 16px;
+        }
+
+        .status-aula.concluida { background: #e8f7ee; color: #197647; }
+        .status-aula.agendada { background: #eef4ff; color: #3267c7; }
+        .status-aula.repor { background: #fff4e8; color: #b86712; }
+
+
+        /* ==============================
+           CARDS
+           ============================== */
+
+        .sessa-dashP {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card-dashP {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-dashP:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-dashP h4 {
+            margin-bottom: 10px;
+        }
+
+        .valor-dashP {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+
+        /* ÍCONE DOS CARDS */
+
+        .card-dashP::after {
+            content: "";
+            position: absolute;
+            right: 18px;
+            bottom: 12px;
+
+            width: 45px;
+            height: 45px;
+
+            border-radius: 50%;
+
+            opacity: 0.08;
+        }
+
+        .card-dashP:nth-child(1)::after {
+            content: "\f0c0";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+        .card-dashP:nth-child(2)::after {
+            content: "\f073";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+        .card-dashP:nth-child(3)::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+        }
+
+
+        /* ==============================
+           ÁREA DE AGENDAMENTOS
+           ============================== */
+
+        .sessad-dashP {
+            overflow: hidden;
+        }
+
+        .sessad-dashP > h3 {
+            margin: 0;
+            padding-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sessad-dashP > h3::before {
+            content: "\f274";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 17px;
+        }
+
+
+        /* ==============================
+           TABELA
+           ============================== */
+
+        .sessad-dashP table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .sessad-dashP thead th {
+            padding: 13px 16px;
+        }
+
+        .sessad-dashP tbody td {
+            padding: 15px 16px;
+            vertical-align: middle;
+        }
+
+        .sessad-dashP tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .sessad-dashP tbody tr:hover {
+            background: rgba(0, 0, 0, 0.025);
+        }
+
+
+        /* ==============================
+           ALUNO
+           ============================== */
+
+        .aluno-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icone-aluno {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+        }
+
+        .icone-aluno i {
+            font-size: 13px;
+        }
+
+
+        /* ==============================
+           NOME DA AULA
+           ============================== */
+
+        .nome-aula {
+            font-weight: 500;
+        }
+
+
+        /* ==============================
+           STATUS
+           ============================== */
+
+        .status-aula {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+            font-weight: 500;
+
+            white-space: nowrap;
+        }
+
+        .status-aula i {
+            font-size: 10px;
+        }
+
+
+        /* ==============================
+           RESPONSIVIDADE
+           ============================== */
+
+        @media (max-width: 950px) {
+
+            .sessa-dashP {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .sessad-dashP {
+                overflow-x: auto;
+            }
+
+            .sessad-dashP table {
+                min-width: 650px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .card-dashP {
+                padding: 18px;
+            }
+
+            .valor-dashP {
+                font-size: 27px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="padheader">
+
+    <div class="container vis-btn-logo">
+
+        <div class="logo">
+
+            <img
+                src="IMGS/reclasslogo.jpeg"
+                alt="Wiz Logo"
+                onerror="this.src='https://via.placeholder.com/150x50?text=Wiz+Logo'"
+            >
+
+        </div>
+
+
+        <nav class="btns-header">
+
+            <ul>
+
+                <li>
+                    <a href="index.html">
+                        Início
+                    </a>
+                </li>
+
+                <li>
+                    <a href="index.html" id="linkSair" class="bt-age">
+                        Sair
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+    <div class="paddashP">
+
+
+        <!-- MENU -->
+
+        <aside class="menu-dash">
+
+            <h3>Painel Administrador</h3>
+
+            <ul class="cont-menu-dash">
+
+                <li>
+                    <a href="dashP.html" class="escrita-menu-dash">
+                        <i class="fas fa-chart-line"></i>
+                        Início
+                    </a>
+                </li>
+
+                <li>
+                    <a href="alunos.html">
+                        <i class="fas fa-users"></i>
+                        Alunos
+                    </a>
+                </li>
+
+                <li>
+                    <a href="tdsaulas.html">
+                        <i class="fas fa-calendar-alt"></i>
+                        Detalhes das aulas
+                    </a>
+                </li>
+
+                <li>
+                    <a href="maisaula.html">
+                        <i class="fas fa-plus-circle"></i>
+                        Abrir Nova Aula
+                    </a>
+                </li>
+
+                <li> <a href="perfilP.html"> <i class="fas fa-user"></i> Meu Perfil </a> </li>
+
+                <li>
+                    <a href="reclass://open" class="escrita-menu-dash" title="Abrir o aplicativo Reclass Desktop">
+                        <i class="fas fa-desktop"></i>
+                        Reclass Desktop
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+
+
+        <!-- CONTEÚDO -->
+
+        <section class="content">
+
+
+            <!-- CARDS DE RESUMO -->
+            <p id="mensagemPainel" role="status" aria-live="polite">Carregando dados do painel...</p>
+
+            <div class="sessa-dashP">
+                <div class="card-dashP">
+                    <h4>Total de Alunos</h4>
+                    <div class="valor-dashP" id="totalAlunos">—</div>
+                </div>
+
+                <div class="card-dashP">
+                    <h4>Aulas este Mês</h4>
+                    <div class="valor-dashP" id="aulasMes">—</div>
+                </div>
+
+                <div class="card-dashP">
+                    <h4>Reposições Feitas</h4>
+                    <div class="valor-dashP" id="reposicoes">—</div>
+                </div>
+            </div>
+
+            <!-- AGENDAMENTOS -->
+
+            <div class="sessad-dashP">
+
+                <h3>
+                    Últimos Agendamentos no Sistema
+                </h3>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Aluno
+                            </th>
+
+                            <th>
+                                Aula
+                            </th>
+
+                            <th>
+                                Data
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="corpoAgendamentos"></tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+    </div>
+
+</main>
+
+
+
+<footer class="site-footer">
+
+    <div class="container">
+
+        <p>
+            &copy; 2026 Reclass - Sistema de Reposição de Aulas
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const $ = (id) => document.getElementById(id);
+    const mensagem = $('mensagemPainel');
+    const corpo = $('corpoAgendamentos');
+
+    function mostrarErro(texto) {
+        mensagem.textContent = texto;
+        mensagem.classList.add('erro');
+    }
+
+    function formatarData(data) {
+        if (!data) return '—';
+        const partes = data.split('-');
+        return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : data;
+    }
+
+    function celula(conteudo) {
+        const td = document.createElement('td');
+        if (conteudo instanceof Node) td.appendChild(conteudo);
+        else td.textContent = String(conteudo ?? '—');
+        return td;
+    }
+
+    function montarLinha(registro, nomeAluno) {
+        const tr = document.createElement('tr');
+
+        const aluno = document.createElement('div');
+        aluno.className = 'aluno-info';
+        const avatar = document.createElement('div');
+        avatar.className = 'icone-aluno';
+        const icone = document.createElement('i');
+        icone.className = 'fas fa-user';
+        avatar.appendChild(icone);
+        const nome = document.createElement('span');
+        nome.textContent = nomeAluno || 'Aluno';
+        aluno.append(avatar, nome);
+        tr.appendChild(celula(aluno));
+
+        const aula = document.createElement('span');
+        aula.className = 'nome-aula';
+        aula.textContent = registro.aula || 'Aula de reposição';
+        tr.appendChild(celula(aula));
+        tr.appendChild(celula(formatarData(registro.data)));
+
+        const statusMap = {
+            agendada: { texto: 'Agendada', classe: 'agendada', icone: 'fa-clock' },
+            concluida: { texto: 'Concluída', classe: 'concluida', icone: 'fa-check' },
+            repor: { texto: 'Para repor', classe: 'repor', icone: 'fa-rotate' }
+        };
+        const estado = statusMap[registro.status] || {
+            texto: registro.status || 'Indefinido', classe: 'agendada', icone: 'fa-clock'
+        };
+        const etiqueta = document.createElement('span');
+        etiqueta.className = `status-aula ${estado.classe}`;
+        const iconeEstado = document.createElement('i');
+        iconeEstado.className = `fas ${estado.icone}`;
+        etiqueta.append(iconeEstado, document.createTextNode(` ${estado.texto}`));
+        tr.appendChild(celula(etiqueta));
+
+        return tr;
+    }
+
+    async function carregarPainel() {
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) {
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        const usuario = authData.user;
+        const { data: perfil, error: perfilError } = await supabase
+            .from('profiles')
+            .select('id, nome, tipo_usuario')
+            .eq('id', usuario.id)
+            .single();
+
+        if (perfilError || !perfil) {
+            throw new Error('Não foi possível carregar o perfil do professor. Confira a tabela profiles e suas políticas de acesso.');
+        }
+
+        if (perfil.tipo_usuario !== 'professor') {
+            await supabase.auth.signOut();
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        // Total de alunos
+        const { count: quantidadeAlunos, error: alunosError } = await supabase
+            .from('profiles')
+            .select('id', { count: 'exact', head: true })
+            .eq('tipo_usuario', 'aluno');
+        if (alunosError) throw alunosError;
+        $('totalAlunos').textContent = quantidadeAlunos ?? 0;
+
+        // Aulas agendadas neste mês
+        const agora = new Date();
+        const inicioMes = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-01`;
+        const proximoMesData = new Date(agora.getFullYear(), agora.getMonth() + 1, 1);
+        const inicioProximoMes = `${proximoMesData.getFullYear()}-${String(proximoMesData.getMonth() + 1).padStart(2, '0')}-01`;
+
+        const { count: quantidadeMes, error: mesError } = await supabase
+            .from('agendamentos')
+            .select('id', { count: 'exact', head: true })
+            .gte('data', inicioMes)
+            .lt('data', inicioProximoMes);
+        if (mesError) throw mesError;
+        $('aulasMes').textContent = quantidadeMes ?? 0;
+
+        // Reposições concluídas
+        const { count: quantidadeConcluidas, error: concluidasError } = await supabase
+            .from('agendamentos')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'concluida');
+        if (concluidasError) throw concluidasError;
+        $('reposicoes').textContent = quantidadeConcluidas ?? 0;
+
+        // Últimos cinco agendamentos
+        const { data: agendamentos, error: agendamentosError } = await supabase
+            .from('agendamentos')
+            .select('id, id_aluno, aula, data, horario, status')
+            .order('id', { ascending: false })
+            .limit(5);
+        if (agendamentosError) throw agendamentosError;
+
+        const lista = agendamentos || [];
+        const idsAlunos = [...new Set(lista.map(item => item.id_aluno).filter(Boolean))];
+        let nomesPorId = {};
+
+        if (idsAlunos.length) {
+            const { data: perfisAlunos, error: nomesError } = await supabase
+                .from('profiles')
+                .select('id, nome')
+                .in('id', idsAlunos);
+            if (nomesError) throw nomesError;
+            nomesPorId = Object.fromEntries((perfisAlunos || []).map(item => [item.id, item.nome]));
+        }
+
+        corpo.replaceChildren();
+        if (lista.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 4;
+            td.textContent = 'Nenhum agendamento encontrado.';
+            td.style.textAlign = 'center';
+            td.style.padding = '24px';
+            tr.appendChild(td);
+            corpo.appendChild(tr);
+        } else {
+            lista.forEach(item => {
+                corpo.appendChild(montarLinha(item, nomesPorId[item.id_aluno]));
+            });
+        }
+
+        mensagem.textContent = `Olá, ${perfil.nome || usuario.email || 'professor'}! Os dados do painel foram carregados.`;
+        mensagem.classList.remove('erro');
+    }
+
+    $('linkSair').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) console.error('Erro ao sair:', error);
+        window.location.href = 'index.html';
+    });
+
+    try {
+        await carregarPainel();
+    } catch (erro) {
+        console.error('Erro ao carregar painel do professor:', erro);
+        mostrarErro('Não foi possível carregar o painel. Confira as permissões de leitura (RLS) das tabelas profiles e agendamentos. Detalhe: ' + (erro.message || 'erro desconhecido'));
+    }
+</script>
+
+</body>
+
+</html>
+

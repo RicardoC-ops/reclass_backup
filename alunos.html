@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alunos | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+
+    <style>
+        .paddashP { display:flex; gap:30px; padding:40px 0; align-items:flex-start; }
+        .content { flex:1; min-width:0; }
+        .sessad-dashP { padding:24px; overflow:hidden; }
+        .cabecalho-alunos { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
+        .cabecalho-alunos h2 { margin:0 0 6px; font-size:22px; font-weight:600; }
+        .cabecalho-alunos p { margin:0; font-size:13px; opacity:.72; }
+        .total-alunos { padding:9px 13px; border-radius:8px; border:1px solid #dce6f8; background:#f1f6ff; color:#3267c7; font-size:12px; font-weight:600; white-space:nowrap; }
+        .busca-alunos { position:relative; max-width:380px; width:100%; margin-bottom:18px; }
+        .busca-alunos i { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:13px; opacity:.6; }
+        .busca-alunos input { box-sizing:border-box; width:100%; padding:12px 14px 12px 39px; border:1px solid #dfe4ed; border-radius:8px; background:#fff; color:inherit; font:13px 'Poppins',sans-serif; outline:none; }
+        .busca-alunos input:focus { border-color:#80a5f3; box-shadow:0 0 0 3px rgba(50,103,199,.09); }
+        .tabela-wrap { width:100%; overflow-x:auto; }
+        .tabela-alunos { width:100%; border-collapse:separate; border-spacing:0; min-width:760px; }
+        .tabela-alunos th, .tabela-alunos td { padding:14px 13px; text-align:left; vertical-align:middle; }
+        .tabela-alunos th { font-size:10px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; opacity:.65; border-bottom:1px solid #e7eaf0; white-space:nowrap; }
+        .tabela-alunos td { font-size:12px; border-bottom:1px solid #f0f2f6; }
+        .tabela-alunos tbody tr:hover { background:rgba(50,103,199,.035); }
+        .tabela-alunos tbody tr:last-child td { border-bottom:0; }
+        .id-aluno { font-weight:600; white-space:nowrap; color:#667085; }
+        .aluno-info { display:flex; align-items:center; gap:10px; min-width:150px; }
+        .aluno-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#eef4ff; color:#3267c7; font-size:12px; font-weight:700; }
+        .aluno-nome { font-weight:600; overflow-wrap:anywhere; }
+        .email-aluno { display:flex; align-items:center; gap:7px; white-space:nowrap; }
+        .email-aluno i, .aula-aluno i { color:#7b8ba5; font-size:12px; }
+        .aula-aluno { display:flex; align-items:center; gap:8px; font-weight:500; white-space:nowrap; }
+        .sem-aula { opacity:.6; font-style:italic; white-space:nowrap; }
+        .mensagem-lista { padding:25px 12px; text-align:center; font-size:13px; opacity:.75; }
+        .mensagem-lista i { display:block; margin-bottom:9px; font-size:25px; }
+        .mensagem-erro { color:#b42318; opacity:1; }
+        .aviso-email { display:none; margin:0 0 14px; padding:10px 12px; border-radius:8px; border:1px solid #f2dfb7; background:#fff9eb; color:#845d16; font-size:11px; line-height:1.5; }
+        @media(max-width:850px) { .paddashP { flex-direction:column; } .menu-dash { width:100%; min-width:0; } .cont-menu-dash { display:flex; flex-wrap:wrap; gap:5px; } .cont-menu-dash li { margin:0; } .content { width:100%; } }
+        @media(max-width:600px) { .sessad-dashP { padding:17px; } .cabecalho-alunos h2 { font-size:19px; } }
+    </style>
+</head>
+<body>
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo"><img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass"></div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#" id="btnSair" class="bt-age">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="paddashP">
+        <aside class="menu-dash">
+            <h3>Painel do Professor</h3>
+            <ul class="cont-menu-dash">
+                <li><a href="dashP.html"><i class="fas fa-chart-line"></i> Início</a></li>
+                <li><a href="alunos.html" class="escrita-menu-dash"><i class="fas fa-users"></i> Alunos</a></li>
+                <li><a href="tdsaulas.html"><i class="fas fa-calendar-alt"></i> Todas as Aulas</a></li>
+                <li><a href="maisaula.html"><i class="fas fa-plus-circle"></i> Abrir Nova Aula</a></li>
+                <li><a href="perfilP.html"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            </ul>
+        </aside>
+
+        <section class="content">
+            <div class="sessad-dashP">
+                <div class="cabecalho-alunos">
+                    <div>
+                        <h2><i class="fas fa-users"></i> Lista de Alunos</h2>
+                        <p>Consulte os alunos cadastrados e seus agendamentos.</p>
+                    </div>
+                    <div class="total-alunos"><i class="fas fa-user-graduate"></i> <span id="totalAlunos">—</span> alunos</div>
+                </div>
+
+                <div class="busca-alunos">
+                    <i class="fas fa-search"></i>
+                    <input type="search" id="campoBusca" placeholder="Buscar por nome, e-mail ou código..." aria-label="Buscar alunos">
+                </div>
+
+                <div id="avisoEmail" class="aviso-email"></div>
+                <p id="mensagem" class="mensagem-lista" role="status" aria-live="polite"><i class="fas fa-spinner fa-spin"></i>Carregando alunos...</p>
+
+                <div class="tabela-wrap" id="areaTabela" hidden>
+                    <table class="tabela-alunos">
+                        <thead>
+                            <tr><th>ID</th><th>Aluno</th><th>E-mail</th><th>Aula agendada</th><th>Data</th><th>Horário</th></tr>
+                        </thead>
+                        <tbody id="corpoAlunos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer"><div class="container"><p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p></div></footer>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const mensagem = document.getElementById('mensagem');
+    const corpo = document.getElementById('corpoAlunos');
+    const areaTabela = document.getElementById('areaTabela');
+    const campoBusca = document.getElementById('campoBusca');
+    const avisoEmail = document.getElementById('avisoEmail');
+
+    let linhasAlunos = [];
+    let emailDisponivel = true;
+
+    function escapar(valor) {
+        return String(valor ?? '').replace(/[&<>"']/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        })[c]);
+    }
+
+    function formatarData(valor) {
+        if (!valor) return '-';
+        const partes = String(valor).split('-');
+        return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : String(valor);
+    }
+
+    function formatarHorario(valor) {
+        return valor ? String(valor).slice(0, 5) : '-';
+    }
+
+    function iniciais(nome) {
+        return String(nome || 'Aluno').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('') || 'A';
+    }
+
+    function renderizar(lista) {
+        corpo.replaceChildren();
+        document.getElementById('totalAlunos').textContent = new Set(lista.map(l => l.id)).size;
+
+        if (!lista.length) {
+            areaTabela.hidden = true;
+            mensagem.hidden = false;
+            mensagem.className = 'mensagem-lista';
+            mensagem.innerHTML = '<i class="far fa-face-meh"></i>Nenhum aluno encontrado com essa pesquisa.';
+            return;
+        }
+
+        mensagem.hidden = true;
+        areaTabela.hidden = false;
+
+        lista.forEach(item => {
+            const tr = document.createElement('tr');
+            const idCurto = String(item.id || '').length > 12 ? String(item.id).slice(0, 8) : String(item.id || '—');
+            tr.innerHTML = `
+                <td class="id-aluno">#${escapar(idCurto)}</td>
+                <td><div class="aluno-info"><div class="aluno-avatar">${escapar(iniciais(item.nome))}</div><span class="aluno-nome">${escapar(item.nome || 'Aluno sem nome')}</span></div></td>
+                <td><div class="email-aluno"><i class="fas fa-envelope"></i>${escapar(item.email || 'E-mail indisponível')}</div></td>
+                <td>${item.aula ? `<div class="aula-aluno"><i class="fas fa-book-open"></i>${escapar(item.aula)}</div>` : '<span class="sem-aula">Nenhuma aula agendada</span>'}</td>
+                <td class="data-aula">${escapar(formatarData(item.data))}</td>
+                <td class="horario-aula">${escapar(formatarHorario(item.horario))}</td>`;
+            corpo.appendChild(tr);
+        });
+    }
+
+    function aplicarBusca() {
+        const termo = campoBusca.value.trim().toLocaleLowerCase('pt-BR');
+        const filtrados = linhasAlunos.filter(item =>
+            [item.id, item.nome, item.email, item.aula, item.data, item.horario]
+                .some(valor => String(valor ?? '').toLocaleLowerCase('pt-BR').includes(termo))
+        );
+        renderizar(filtrados);
+    }
+
+    async function carregarAlunos() {
+        mensagem.hidden = false;
+        mensagem.className = 'mensagem-lista';
+        mensagem.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Carregando alunos...';
+        areaTabela.hidden = true;
+
+        const { data: authData, error: authError } = await supabase.auth.getUser();
+        if (authError || !authData.user) {
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        const { data: professor, error: erroProfessor } = await supabase
+            .from('profiles')
+            .select('nome, tipo_usuario')
+            .eq('id', authData.user.id)
+            .single();
+
+        if (erroProfessor || !professor || professor.tipo_usuario !== 'professor') {
+            await supabase.auth.signOut();
+            window.location.replace('loginP.html');
+            return;
+        }
+
+        // Tenta obter os e-mails se a coluna existir em profiles.
+        let resultadoPerfis = await supabase
+            .from('profiles')
+            .select('id, nome, email, tipo_usuario')
+            .eq('tipo_usuario', 'aluno')
+            .order('nome', { ascending: true });
+
+        if (resultadoPerfis.error) {
+            emailDisponivel = false;
+            resultadoPerfis = await supabase
+                .from('profiles')
+                .select('id, nome, tipo_usuario')
+                .eq('tipo_usuario', 'aluno')
+                .order('nome', { ascending: true });
+        }
+
+        if (resultadoPerfis.error) {
+            throw new Error('Não foi possível carregar os alunos. Confira as políticas de leitura (RLS) da tabela profiles. Detalhe: ' + resultadoPerfis.error.message);
+        }
+
+        const alunos = resultadoPerfis.data || [];
+        const { data: agendamentos, error: erroAulas } = await supabase
+            .from('agendamentos')
+            .select('id_aluno, aula, data, horario, status')
+            .order('data', { ascending: true })
+            .order('horario', { ascending: true });
+
+        if (erroAulas) {
+            console.warn('Não foi possível consultar os agendamentos:', erroAulas);
+            avisoEmail.textContent = 'A lista de alunos foi carregada, mas não foi possível consultar os agendamentos. Verifique a política de leitura da tabela agendamentos para professores.';
+            avisoEmail.style.display = 'block';
+        } else {
+            avisoEmail.style.display = 'none';
+        }
+
+        if (!emailDisponivel) {
+            avisoEmail.textContent = 'Os e-mails não aparecem porque a tabela profiles não possui uma coluna email acessível. Os nomes e os agendamentos continuam disponíveis.';
+            avisoEmail.style.display = 'block';
+        }
+
+        const listaAulas = agendamentos || [];
+        linhasAlunos = [];
+        alunos.forEach(aluno => {
+            const aulasAluno = listaAulas.filter(a => a.id_aluno === aluno.id);
+            if (aulasAluno.length) {
+                aulasAluno.forEach(aula => linhasAlunos.push({ ...aluno, aula: aula.aula, data: aula.data, horario: aula.horario }));
+            } else {
+                linhasAlunos.push({ ...aluno, aula: null, data: null, horario: null });
+            }
+        });
+
+        if (!alunos.length) {
+            mensagem.hidden = false;
+            mensagem.className = 'mensagem-lista';
+            mensagem.innerHTML = '<i class="fas fa-user-graduate"></i>Nenhum aluno cadastrado ainda.';
+            document.getElementById('totalAlunos').textContent = '0';
+            areaTabela.hidden = true;
+            return;
+        }
+
+        aplicarBusca();
+    }
+
+    campoBusca.addEventListener('input', aplicarBusca);
+
+    document.getElementById('btnSair').addEventListener('click', async (event) => {
+        event.preventDefault();
+        await supabase.auth.signOut();
+        window.location.href = 'index.html';
+    });
+
+    try {
+        await carregarAlunos();
+    } catch (erro) {
+        console.error('Erro ao carregar alunos:', erro);
+        mensagem.hidden = false;
+        mensagem.className = 'mensagem-lista mensagem-erro';
+        mensagem.textContent = erro.message || 'Ocorreu um erro ao carregar a lista de alunos.';
+    }
+</script>
+</body>
+</html>

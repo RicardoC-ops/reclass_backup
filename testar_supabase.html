@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teste de conexão | Reclass</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 680px; margin: 48px auto; padding: 0 20px; color: #172033; background: #fff; }
+    h1 { color: #23458a; }
+    #resultado { padding: 16px; border: 1px solid #cbd5e1; border-radius: 10px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Teste de conexão do Reclass</h1>
+  <p>Verificando se o navegador consegue acessar o Supabase...</p>
+  <div id="resultado">Testando...</div>
+  <script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const resultado = document.getElementById('resultado');
+    try {
+      const { error } = await supabase.auth.getSession();
+      if (error) throw error;
+      resultado.textContent = 'Conexão inicial realizada com sucesso!\nAgora podemos configurar cadastro e login.';
+      resultado.style.borderColor = '#16a34a';
+    } catch (error) {
+      resultado.textContent = 'Não foi possível concluir o teste.\n' + (error?.message || String(error));
+      resultado.style.borderColor = '#dc2626';
+    }
+  </script>
+</body>
+</html>

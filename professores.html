@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professores | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+
+    <style>
+        .paddashP { display: flex; gap: 30px; padding: 40px 0; align-items: flex-start; }
+        .content { flex: 1; min-width: 0; }
+        .professores-area { width: 100%; }
+        .professores-box { width: 100%; }
+        .professores-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 25px; }
+        .professores-header h3 { margin: 0; font-size: 24px; }
+        .professores-header p { margin: 5px 0 0; font-size: 14px; opacity: .7; }
+        .professores-tools { display: flex; gap: 10px; margin-bottom: 18px; }
+        .professores-tools input { box-sizing: border-box; width: 100%; max-width: 390px; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font: inherit; }
+        .professores-tools input:focus { outline: 2px solid rgba(50,103,199,.18); border-color: #3267c7; }
+        .tabela-wrapper { width: 100%; overflow-x: auto; }
+        .tabela-professores { width: 100%; min-width: 690px; border-collapse: collapse; overflow: hidden; }
+        .tabela-professores th { text-align: left; padding: 15px 18px; font-weight: 600; }
+        .tabela-professores td { padding: 17px 18px; vertical-align: middle; }
+        .tabela-professores tbody tr { transition: background .2s ease; }
+        .tabela-professores tbody tr:hover { background: rgba(50,103,199,.035); }
+        .id-professor { font-weight: 600; opacity: .7; white-space: nowrap; }
+        .nome-professor { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+        .icone-professor { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #eef4ff; color: #3267c7; }
+        .email-professor { opacity: .8; overflow-wrap: anywhere; }
+        .lingua-professor { display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+        .estado-lista { text-align: center; padding: 34px 20px; }
+        .estado-lista i { display: block; font-size: 30px; margin-bottom: 12px; opacity: .65; }
+        .estado-lista p { margin: 0 0 7px; }
+        .estado-lista small { opacity: .7; }
+        .mensagem-erro { color: #a52828; }
+        .contador-professores { font-size: 12px; opacity: .7; margin: 0 0 12px; }
+        @media (max-width: 850px) {
+            .paddashP { flex-direction: column; }
+            .menu-dash { width: 100%; min-width: 0; }
+            .cont-menu-dash { display: flex; flex-wrap: wrap; gap: 5px; }
+            .cont-menu-dash li { margin: 0; }
+            .tabela-professores { font-size: 14px; }
+            .tabela-professores th, .tabela-professores td { padding: 13px 10px; }
+            .professores-header h3 { font-size: 21px; }
+            .content { width: 100%; }
+        }
+        @media (max-width: 650px) {
+            .professores-header { align-items: flex-start; }
+            .professores-header h3 { font-size: 20px; }
+            .professores-tools input { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo"><img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass"></div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="aulas.html">Agendar Aula</a></li>
+                <li><a href="perfil.html"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
+                <li><a href="index.html" id="btnSair" class="bt-age">Sair</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="paddashP">
+        <aside class="menu-dash">
+            <h2>Olá, <span id="nomeAluno">...</span>!</h2>
+            <br>
+            <ul class="cont-menu-dash">
+                <li><a href="dashA.html"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="professores.html" class="escrita-menu-dash"><i class="fas fa-chalkboard-teacher"></i> Professores</a></li>
+                <li><a href="aulas.html"><i class="fas fa-calendar-plus"></i> Agendar Reposição</a></li>
+                <li><a href="perfil.html"><i class="fas fa-user"></i> Meu Perfil</a></li>
+            </ul>
+        </aside>
+
+        <section class="content">
+            <div class="sessad-dashP professores-area">
+                <div class="professores-box">
+                    <div class="professores-header">
+                        <div>
+                            <h3><i class="fas fa-users"></i> Lista de Professores</h3>
+                            <p>Confira os professores cadastrados no Reclass.</p>
+                        </div>
+                    </div>
+
+                    <div class="professores-tools">
+                        <input type="search" id="buscarProfessor" placeholder="Buscar por nome ou e-mail..." aria-label="Buscar professor">
+                    </div>
+                    <p class="contador-professores" id="contadorProfessores">Carregando professores...</p>
+                    <div id="estadoLista" class="estado-lista" role="status" aria-live="polite">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Carregando lista de professores...</p>
+                    </div>
+
+                    <div class="tabela-wrapper" id="wrapperTabela" hidden>
+                        <table class="tabela-professores">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>Idioma</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoProfessores"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container"><p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p></div>
+</footer>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const nomeAluno = document.getElementById('nomeAluno');
+    const estadoLista = document.getElementById('estadoLista');
+    const wrapperTabela = document.getElementById('wrapperTabela');
+    const corpoProfessores = document.getElementById('corpoProfessores');
+    const contadorProfessores = document.getElementById('contadorProfessores');
+    const buscarProfessor = document.getElementById('buscarProfessor');
+    let professores = [];
+
+    function estado(texto, icone = 'fa-circle-info', erro = false, detalhe = '') {
+        estadoLista.hidden = false;
+        estadoLista.innerHTML = '';
+        const i = document.createElement('i');
+        i.className = `fas ${icone}${icone === 'fa-spinner fa-spin' ? '' : ''}`;
+        const p = document.createElement('p');
+        p.textContent = texto;
+        if (erro) p.className = 'mensagem-erro';
+        estadoLista.append(i, p);
+        if (detalhe) {
+            const small = document.createElement('small');
+            small.textContent = detalhe;
+            estadoLista.appendChild(small);
+        }
+        wrapperTabela.hidden = true;
+    }
+
+    function criarCelula(texto, classe = '') {
+        const td = document.createElement('td');
+        if (classe) td.className = classe;
+        td.textContent = texto;
+        return td;
+    }
+
+    function renderizar(lista) {
+        corpoProfessores.replaceChildren();
+        contadorProfessores.textContent = `${lista.length} ${lista.length === 1 ? 'professor encontrado' : 'professores encontrados'}`;
+
+        if (!lista.length) {
+            estado(buscarProfessor.value.trim() ? 'Nenhum professor corresponde à pesquisa.' : 'Nenhum professor cadastrado.', 'fa-user-slash');
+            return;
+        }
+
+        estadoLista.hidden = true;
+        wrapperTabela.hidden = false;
+
+        lista.forEach((professor) => {
+            const tr = document.createElement('tr');
+            const idCurto = String(professor.id || '').replaceAll('-', '').slice(0, 8).toUpperCase();
+            tr.appendChild(criarCelula(idCurto ? `#${idCurto}` : '—', 'id-professor'));
+
+            const nomeTd = document.createElement('td');
+            const nomeWrap = document.createElement('div');
+            nomeWrap.className = 'nome-professor';
+            const avatar = document.createElement('div');
+            avatar.className = 'icone-professor';
+            const icone = document.createElement('i');
+            icone.className = 'fas fa-user-tie';
+            avatar.appendChild(icone);
+            const nome = document.createElement('span');
+            nome.textContent = professor.nome || 'Professor Reclass';
+            nomeWrap.append(avatar, nome);
+            nomeTd.appendChild(nomeWrap);
+            tr.appendChild(nomeTd);
+
+            tr.appendChild(criarCelula(professor.email || 'E-mail não informado', 'email-professor'));
+            tr.appendChild(criarCelula(professor.lingua || 'Não informado', 'lingua-professor'));
+            corpoProfessores.appendChild(tr);
+        });
+    }
+
+    function filtrar() {
+        const termo = buscarProfessor.value.trim().toLocaleLowerCase('pt-BR');
+        const filtrados = professores.filter((p) =>
+            String(p.nome || '').toLocaleLowerCase('pt-BR').includes(termo) ||
+            String(p.email || '').toLocaleLowerCase('pt-BR').includes(termo)
+        );
+        renderizar(filtrados);
+    }
+
+    async function carregarProfessores() {
+        estado('Carregando lista de professores...', 'fa-spinner fa-spin');
+
+        const { data: usuarioData, error: erroUsuario } = await supabase.auth.getUser();
+        if (erroUsuario || !usuarioData?.user) {
+            window.location.replace('login.html');
+            return;
+        }
+
+        const usuario = usuarioData.user;
+        const { data: perfil, error: erroPerfil } = await supabase
+            .from('profiles')
+            .select('nome, tipo_usuario')
+            .eq('id', usuario.id)
+            .single();
+
+        if (erroPerfil || !perfil) {
+            estado('Não foi possível verificar seu perfil.', 'fa-triangle-exclamation', true,
+                'Confira se a tabela profiles e as políticas RLS estão configuradas.');
+            contadorProfessores.textContent = '';
+            return;
+        }
+
+        if (perfil.tipo_usuario !== 'aluno') {
+            await supabase.auth.signOut();
+            window.location.replace('login.html');
+            return;
+        }
+
+        nomeAluno.textContent = perfil.nome || usuario.email || 'Aluno';
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('id, nome, email, tipo_usuario')
+            .eq('tipo_usuario', 'professor')
+            .order('nome', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao carregar professores:', error);
+            estado('Não foi possível carregar os professores.', 'fa-triangle-exclamation', true,
+                'Verifique se a política RLS permite que alunos visualizem os perfis dos professores.');
+            contadorProfessores.textContent = '';
+            return;
+        }
+
+        // A tabela profiles ainda não possui uma coluna de idioma confirmada.
+        // Por isso, não exibimos um idioma fixo que poderia estar incorreto.
+        professores = (data || []).map((p) => ({ ...p, lingua: null }));
+        filtrar();
+    }
+
+    buscarProfessor.addEventListener('input', filtrar);
+
+    document.getElementById('btnSair').addEventListener('click', async (event) => {
+        event.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) console.error('Erro ao encerrar sessão:', error);
+        window.location.href = 'index.html';
+    });
+
+    try {
+        await carregarProfessores();
+    } catch (erro) {
+        console.error(erro);
+        estado('Ocorreu um erro ao carregar a página.', 'fa-triangle-exclamation', true, erro.message || 'Tente novamente.');
+        contadorProfessores.textContent = '';
+    }
+</script>
+</body>
+</html>

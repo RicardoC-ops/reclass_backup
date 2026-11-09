@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Aulas | Reclass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+    <style>
+        .mensagem-agendamento { display:none; margin:18px 0; padding:12px 16px; border-radius:8px; font-size:14px; overflow-wrap:anywhere; }
+        .mensagem-agendamento.visivel { display:block; }
+        .mensagem-agendamento.erro { background:#fff0f0; color:#a32121; }
+        .mensagem-agendamento.sucesso { background:#edf8ef; color:#216e35; }
+        .mensagem-agendamento.info { background:#edf4ff; color:#234f9f; }
+        .btn-card:disabled { opacity:.65; cursor:not-allowed; }
+        .estado-aulas { text-align:center; padding:42px 20px; background:#fff; border-radius:12px; width:100%; }
+        .estado-aulas i { font-size:34px; margin-bottom:12px; color:#3267c7; }
+        .estado-aulas p { margin:8px 0; }
+        .estado-aulas small { display:block; opacity:.75; }
+        .aulas-seg-sessa { align-items:stretch; }
+        .card-aula { min-width:0; }
+        .card-aula .bandeiras { object-fit:contain; }
+        .info-aula { overflow-wrap:anywhere; }
+        .vagas-aula { font-size:13px; margin:10px 0; color:#3267c7; font-weight:600; }
+        .observacao-aula { font-size:12px; line-height:1.6; opacity:.8; margin:8px 0; }
+        .titulo-pagina-aulas { margin-bottom:12px; }
+
+        .confirmation-container { max-width: 720px; margin: 35px auto; padding: 36px 28px; background: #fff; border: 1px solid #e6eaf0; border-radius: 18px; box-shadow: 0 12px 35px rgba(28,55,105,.08); text-align: center; }
+        .success-icon { font-size: 62px; color: #218653; margin-bottom: 14px; }
+        .confirmation-container h2 { margin: 0 0 10px; color: #1f2937; font-size: 27px; }
+        .confirmation-container > p { margin: 0 auto 24px; max-width: 550px; color: #687386; font-size: 14px; line-height: 1.7; }
+        .ticket-details { max-width: 520px; margin: 0 auto 25px; padding: 20px 22px; border: 1px solid #e6eaf0; border-radius: 12px; text-align: left; background: #f8faff; }
+        .ticket-details p { margin: 0; padding: 11px 0; border-bottom: 1px solid #e6eaf0; color: #4b5563; font-size: 14px; overflow-wrap: anywhere; }
+        .ticket-details p:last-child { border-bottom: 0; }
+        .ticket-details strong { display: inline-block; min-width: 105px; color: #25334a; }
+        .confirmation-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+        .confirmation-actions a, .confirmation-actions button { font: inherit; cursor: pointer; text-decoration: none; }
+        .btn-secondary-reclass { padding: 12px 18px; border: 1px solid #d6deeb; border-radius: 8px; background: #fff; color: #315da6; }
+        @media (max-width: 600px) { .confirmation-container { margin: 20px auto; padding: 28px 17px; } .confirmation-container h2 { font-size: 22px; } .ticket-details { padding: 14px; } .ticket-details strong { min-width: 0; margin-right: 5px; } }
+
+        @media (max-width:600px) { .estado-aulas { padding:30px 15px; } }
+    </style>
+</head>
+<body>
+<header class="padheader">
+    <div class="container vis-btn-logo">
+        <div class="logo"><img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass"></div>
+        <nav class="btns-header">
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="dashA.html"><i class="fas fa-user-circle"></i> Meu Painel</a></li>
+                <li><a href="#" id="btnSair" class="bt-age">Sair</a></li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
+    </div>
+</header>
+
+<main>
+    <section class="pad-seg-sessa">
+        <div class="container">
+            <div class="cont-sessa">
+                <h2 class="titulo-pagina-aulas">Todas as Aulas Disponíveis</h2>
+                <p>Escolha uma das aulas do catálogo Reclass ou confira outras aulas publicadas pelos professores.</p>
+            </div>
+
+            <div id="mensagemAgendamento" class="mensagem-agendamento" role="status" aria-live="polite"></div>
+            <div id="estadoAulas" class="estado-aulas">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando as aulas disponíveis...</p>
+            </div>
+            <div id="listaAulas" class="aulas-seg-sessa" hidden></div>
+
+            <!-- CONFIRMAÇÃO EXIBIDA APÓS O AGENDAMENTO SER SALVO -->
+            <section id="confirmationContainer" class="confirmation-container" hidden aria-live="polite">
+                <i class="fas fa-check-circle success-icon" aria-hidden="true"></i>
+                <h2>Agendamento Confirmado!</h2>
+                <p>Sua aula de reposição foi agendada com sucesso. Guarde os detalhes abaixo para consultar seu compromisso.</p>
+                <div class="ticket-details">
+                    <p><strong>Aula:</strong> <span id="confirmAula">—</span></p>
+                    <p><strong>Data:</strong> <span id="confirmData">—</span></p>
+                    <p><strong>Horário:</strong> <span id="confirmHorario">—</span></p>
+                    <p><strong>Local:</strong> <span id="confirmLocal">—</span></p>
+                    <p><strong>Professor:</strong> <span id="confirmProfessor">—</span></p>
+                    <p><strong>Status:</strong> <span>Agendada</span></p>
+                </div>
+                <div class="confirmation-actions">
+                    <a href="dashA.html" class="btn btn-primary"><i class="fas fa-house"></i> Ir para o Painel</a>
+                    <button type="button" id="btnOutraAula" class="btn-secondary-reclass">Agendar outra aula</button>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container"><p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p></div>
+</footer>
+
+<script type="module">
+    import { supabase } from './js/supabase.js';
+
+    const mensagem = document.getElementById('mensagemAgendamento');
+    const estadoAulas = document.getElementById('estadoAulas');
+    const listaAulas = document.getElementById('listaAulas');
+    const confirmationContainer = document.getElementById('confirmationContainer');
+    const cabecalhoAulas = document.querySelector('.cont-sessa');
+    let usuarioAtual = null;
+    let perfilAtual = null;
+
+    function hojeISO() {
+        const agora = new Date();
+        const ano = agora.getFullYear();
+        const mes = String(agora.getMonth() + 1).padStart(2, '0');
+        const dia = String(agora.getDate()).padStart(2, '0');
+        return `${ano}-${mes}-${dia}`;
+    }
+
+    function formatarData(valor) {
+        if (!valor) return 'Data não informada';
+        const partes = String(valor).split('-');
+        if (partes.length !== 3) return valor;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function formatarHorario(valor) {
+        return valor ? String(valor).slice(0, 5) : 'Horário não informado';
+    }
+
+    function mostrarMensagem(texto, tipo = 'info') {
+        mensagem.textContent = texto;
+        mensagem.className = `mensagem-agendamento visivel ${tipo}`;
+        mensagem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function mostrarEstado(texto, icone = 'fa-calendar-xmark', detalhe = '') {
+        estadoAulas.replaceChildren();
+        const i = document.createElement('i');
+        i.className = `fas ${icone}`;
+        const p = document.createElement('p');
+        p.textContent = texto;
+        estadoAulas.append(i, p);
+        if (detalhe) {
+            const small = document.createElement('small');
+            small.textContent = detalhe;
+            estadoAulas.appendChild(small);
+        }
+        estadoAulas.hidden = false;
+        listaAulas.hidden = true;
+    }
+
+    function bandeiraDaAula(titulo) {
+        const t = String(titulo || '').toLocaleLowerCase('pt-BR');
+        if (t.includes('inglês') || t.includes('ingles') || t.includes('(inglês)') || t.includes('(ingles)')) return { src: 'IMGS/eua.png', alt: 'Bandeira dos Estados Unidos' };
+        if (t.includes('italiano') || t.includes('italiana')) return { src: 'IMGS/ita.webp', alt: 'Bandeira da Itália' };
+        if (t.includes('alemão') || t.includes('alemao') || t.includes('alemã') || t.includes('alemao')) return { src: 'IMGS/ale.webp', alt: 'Bandeira da Alemanha' };
+        if (t.includes('francês') || t.includes('francesa') || t.includes('francês')) return { src: 'IMGS/franca.png', alt: 'Bandeira da França' };
+        if (t.includes('espanhol') || t.includes('espanhola')) return { src: 'IMGS/espanha.svg', alt: 'Bandeira da Espanha' };
+        return null;
+    }
+
+    function criarCard(aula) {
+        const article = document.createElement('article');
+        article.className = 'card-aula';
+
+        const disponibilidade = document.createElement('div');
+        disponibilidade.className = 'disp-indis';
+        disponibilidade.textContent = aula.vagas && Number(aula.vagas) > 0
+            ? (Number(aula.vagas) === 1 ? '1 vaga total' : `${aula.vagas} vagas totais`)
+            : 'Disponível';
+        article.appendChild(disponibilidade);
+
+        const bandeira = bandeiraDaAula(aula.titulo);
+        if (bandeira) {
+            const img = document.createElement('img');
+            img.className = 'bandeiras';
+            img.src = bandeira.src;
+            img.alt = bandeira.alt;
+            img.onerror = () => img.remove();
+            article.appendChild(img);
+        } else {
+            const iconeWrap = document.createElement('div');
+            iconeWrap.className = 'bandeiras';
+            iconeWrap.style.display = 'grid';
+            iconeWrap.style.placeItems = 'center';
+            iconeWrap.innerHTML = '<i class="fas fa-book-open" aria-hidden="true"></i>';
+            article.appendChild(iconeWrap);
+        }
+
+        const conteudo = document.createElement('div');
+        conteudo.className = 'cont-card';
+
+        const titulo = document.createElement('h3');
+        titulo.textContent = aula.titulo || 'Aula de reposição';
+        conteudo.appendChild(titulo);
+
+        const data = document.createElement('p');
+        data.className = 'info-aula';
+        const iconeData = document.createElement('i');
+        iconeData.className = 'far fa-calendar-alt';
+        data.append(iconeData, document.createTextNode(` ${formatarData(aula.data)}`));
+        conteudo.appendChild(data);
+
+        const horario = document.createElement('p');
+        horario.className = 'info-aula';
+        const iconeHora = document.createElement('i');
+        iconeHora.className = 'far fa-clock';
+        horario.append(iconeHora, document.createTextNode(` ${formatarHorario(aula.horario)}`));
+        conteudo.appendChild(horario);
+
+        const unidade = document.createElement('p');
+        unidade.className = 'info-aula';
+        const iconeLocal = document.createElement('i');
+        iconeLocal.className = 'fas fa-map-marker-alt';
+        unidade.append(iconeLocal, document.createTextNode(` ${aula.unidade || 'Local não informado'}`));
+        conteudo.appendChild(unidade);
+
+        if (aula.observacoes) {
+            const observacao = document.createElement('p');
+            observacao.className = 'observacao-aula';
+            observacao.textContent = aula.observacoes;
+            conteudo.appendChild(observacao);
+        }
+
+        const form = document.createElement('form');
+        form.className = 'form-agendamento';
+        const botao = document.createElement('button');
+        botao.type = 'submit';
+        botao.className = 'btn btn-primary btn-card';
+        botao.textContent = 'Agendar Aula';
+        form.appendChild(botao);
+        form.addEventListener('submit', (evento) => agendarAula(evento, form, botao, aula));
+        conteudo.appendChild(form);
+        article.appendChild(conteudo);
+        return article;
+    }
+
+    async function mostrarConfirmacao(aula) {
+        document.getElementById('confirmAula').textContent = aula.titulo || 'Aula de reposição';
+        document.getElementById('confirmData').textContent = formatarData(aula.data);
+        document.getElementById('confirmHorario').textContent = formatarHorario(aula.horario);
+        document.getElementById('confirmLocal').textContent = aula.unidade || 'Local não informado';
+
+        let nomeProfessor = 'Não informado';
+        if (aula.professor_id) {
+            const { data: professor, error } = await supabase
+                .from('profiles')
+                .select('nome')
+                .eq('id', aula.professor_id)
+                .maybeSingle();
+            if (!error && professor?.nome) nomeProfessor = professor.nome;
+        }
+        document.getElementById('confirmProfessor').textContent = nomeProfessor;
+
+        if (cabecalhoAulas) cabecalhoAulas.hidden = true;
+        mensagem.className = 'mensagem-agendamento';
+        estadoAulas.hidden = true;
+        listaAulas.hidden = true;
+        confirmationContainer.hidden = false;
+        confirmationContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function agendarAula(evento, formulario, botao, aula) {
+        evento.preventDefault();
+        if (!usuarioAtual || !perfilAtual) {
+            mostrarMensagem('Sua sessão expirou. Entre novamente para agendar.', 'erro');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        const data = String(aula.data || '');
+        const horario = formatarHorario(aula.horario);
+        if (data < hojeISO()) {
+            mostrarMensagem('Esta aula já passou e não pode ser agendada.', 'erro');
+            return;
+        }
+
+        botao.disabled = true;
+        botao.textContent = 'Agendando...';
+        mensagem.className = 'mensagem-agendamento';
+
+        try {
+            // Evita que o mesmo aluno agende a mesma aula mais de uma vez.
+            const { data: existente, error: erroExistente } = await supabase
+                .from('agendamentos')
+                .select('id')
+                .eq('id_aluno', usuarioAtual.id)
+                .eq('aula', aula.titulo)
+                .eq('data', aula.data)
+                .eq('horario', horario)
+                .in('status', ['agendada', 'concluida'])
+                .limit(1);
+
+            if (erroExistente) throw erroExistente;
+            if (existente && existente.length > 0) {
+                throw new Error('Você já tem um registro para esta aula, data e horário.');
+            }
+
+            const { error } = await supabase
+                .from('agendamentos')
+                .insert({
+                    id_aluno: usuarioAtual.id,
+                    aula: aula.titulo,
+                    data: aula.data,
+                    horario: horario,
+                    status: 'agendada'
+                });
+
+            if (error) throw error;
+
+            await mostrarConfirmacao(aula);
+            botao.textContent = 'Agendada';
+            botao.disabled = true;
+        } catch (erro) {
+            console.error('Erro ao agendar aula:', erro);
+            let detalhe = erro.message || 'Erro desconhecido.';
+            if (detalhe.toLowerCase().includes('row-level security')) {
+                detalhe = 'O Supabase bloqueou o agendamento pelas políticas de acesso (RLS). Confira as permissões da tabela agendamentos.';
+            }
+            mostrarMensagem('Não foi possível agendar: ' + detalhe, 'erro');
+            botao.disabled = false;
+            botao.textContent = 'Agendar Aula';
+        }
+    }
+
+    async function inicializar() {
+        mostrarEstado('Carregando aulas do Reclass...', 'fa-spinner fa-spin');
+
+        const { data: usuarioData, error: erroUsuario } = await supabase.auth.getUser();
+        if (erroUsuario) throw erroUsuario;
+        if (!usuarioData.user) {
+            window.location.replace('login.html');
+            return;
+        }
+        usuarioAtual = usuarioData.user;
+
+        const { data: perfil, error: erroPerfil } = await supabase
+            .from('profiles')
+            .select('nome, tipo_usuario')
+            .eq('id', usuarioAtual.id)
+            .single();
+        if (erroPerfil) throw erroPerfil;
+        if (!perfil || perfil.tipo_usuario !== 'aluno') {
+            await supabase.auth.signOut();
+            window.location.replace('login.html');
+            return;
+        }
+        perfilAtual = perfil;
+
+        // Catálogo fixo original do Reclass. As datas foram atualizadas para
+        // próximas datas de demonstração, pois as datas originais de outubro já passaram.
+        const aulasFixas = [
+            { titulo: 'Present Perfect (Inglês)', data: '2026-11-15', horario: '19:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: 'Passato-Prossimo (Italiano)', data: '2026-11-15', horario: '19:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: 'Caso Dativo e Preposições (Alemão)', data: '2026-11-15', horario: '19:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: 'Article-Partitif (Francês)', data: '2026-11-15', horario: '19:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: 'Verbos Sein e Haben (Alemão)', data: '2026-11-22', horario: '14:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: 'Pretérito Indefinido vs. Pretérito Imperfecto (Espanhol)', data: '2026-11-25', horario: '10:00', unidade: 'Unidade Norte', vagas: null, origem: 'catalogo' },
+            { titulo: 'Heterogenéricos e Heterotônicos (Espanhol)', data: '2026-11-25', horario: '10:00', unidade: 'Unidade Centro', vagas: null, origem: 'catalogo' },
+            { titulo: "Le Présent de l'Indicatif (Francês)", data: '2026-11-25', horario: '10:00', unidade: 'Unidade Norte', vagas: null, origem: 'catalogo' }
+        ].filter(aula => aula.data >= hojeISO());
+
+        let aulasPublicadas = [];
+        let erroAoBuscarPublicadas = null;
+
+        const { data: aulas, error: erroAulas } = await supabase
+            .from('aulas')
+            .select('id, titulo, data, horario, unidade, vagas, observacoes, professor_id')
+            .gte('data', hojeISO())
+            .order('data', { ascending: true })
+            .order('horario', { ascending: true });
+
+        if (erroAulas) {
+            console.error('Não foi possível carregar as aulas publicadas:', erroAulas);
+            erroAoBuscarPublicadas = erroAulas;
+        } else {
+            // Evita duplicar um item se o professor publicou o mesmo título/data/horário do catálogo.
+            const chavesFixas = new Set(aulasFixas.map(a => `${a.titulo}|${a.data}|${String(a.horario).slice(0,5)}`));
+            aulasPublicadas = (aulas || []).filter(a =>
+                !chavesFixas.has(`${a.titulo}|${a.data}|${String(a.horario).slice(0,5)}`)
+            ).map(a => ({ ...a, origem: 'professor' }));
+        }
+
+        listaAulas.replaceChildren();
+        aulasFixas.forEach(aula => listaAulas.appendChild(criarCard(aula)));
+        aulasPublicadas.forEach(aula => listaAulas.appendChild(criarCard(aula)));
+        estadoAulas.hidden = true;
+        listaAulas.hidden = false;
+
+        if (erroAoBuscarPublicadas) {
+            mostrarMensagem('As aulas do catálogo estão disponíveis, mas não foi possível carregar as aulas extras publicadas pelos professores. Detalhe: ' + (erroAoBuscarPublicadas.message || 'erro de consulta'), 'info');
+        } else if (aulasPublicadas.length > 0) {
+            mostrarMensagem(`Mostrando ${aulasFixas.length} aulas do catálogo e ${aulasPublicadas.length} aulas publicadas pelos professores.`, 'info');
+        }
+    }
+
+    document.getElementById('btnOutraAula').addEventListener('click', () => {
+        confirmationContainer.hidden = true;
+        if (cabecalhoAulas) cabecalhoAulas.hidden = false;
+        estadoAulas.hidden = true;
+        listaAulas.hidden = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('btnSair').addEventListener('click', async (evento) => {
+        evento.preventDefault();
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('Erro ao sair:', error);
+            mostrarMensagem('Não foi possível encerrar a sessão. Tente novamente.', 'erro');
+            return;
+        }
+        window.location.href = 'index.html';
+    });
+
+    try {
+        await inicializar();
+    } catch (erro) {
+        console.error('Erro ao carregar aulas:', erro);
+        mostrarEstado('Não foi possível carregar as aulas.', 'fa-triangle-exclamation', erro.message || 'Confira a tabela aulas e suas políticas de acesso no Supabase.');
+    }
+</script>
+</body>
+</html>

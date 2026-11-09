@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrir Nova Aula | Reclass</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="IMGS/logoico.ico" type="image/x-icon">
+
+    <style>
+        .paddashP {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        .content { flex: 1; min-width: 0; }
+
+        .nova-aula-card {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 22px rgba(20, 42, 80, .07);
+        }
+
+        .nova-aula-heading { margin-bottom: 26px; }
+        .nova-aula-heading h2 {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin: 0 0 8px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .nova-aula-heading h2 i { color: var(--primary-color, #3267c7); }
+        .nova-aula-heading p { margin: 0; color: #747e8d; font-size: 13px; line-height: 1.6; }
+
+        .form-nova-aula { display: grid; gap: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .input-group label { font-size: 13px; font-weight: 600; color: var(--primary-color, #234f9f); }
+        .input-group input, .input-group select, .input-group textarea {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #dce1e8;
+            border-radius: 8px;
+            background: #fff;
+            color: #253047;
+            font: 13px 'Poppins', sans-serif;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .input-group textarea { resize: vertical; min-height: 90px; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            border-color: #6d95e2;
+            box-shadow: 0 0 0 3px rgba(50, 103, 199, .10);
+        }
+        .campo-ajuda { color: #8992a1; font-size: 11px; line-height: 1.5; }
+
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 48px;
+            background-color: var(--primary-color, #3267c7);
+            color: white;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s, transform .2s, opacity .2s;
+            margin-top: 3px;
+        }
+        .btn-submit:hover { background-color: #234f9f; transform: translateY(-1px); }
+        .btn-submit:disabled { opacity: .65; cursor: wait; transform: none; }
+        .mensagem-formulario { display: none; padding: 12px 14px; border-radius: 8px; font-size: 12px; line-height: 1.6; }
+        .mensagem-formulario.visivel { display: block; }
+        .mensagem-formulario.sucesso { color: #176b50; background: #eaf8f1; border: 1px solid #cdebdc; }
+        .mensagem-formulario.erro { color: #a12d2d; background: #fff0f0; border: 1px solid #f2d1d1; }
+        .formulario-nota { margin: 0; color: #8791a0; font-size: 11px; line-height: 1.6; }
+
+        @media (max-width: 850px) {
+            .paddashP { flex-direction: column; }
+            .menu-dash { width: 100%; min-width: 0; }
+            .cont-menu-dash { display: flex; flex-wrap: wrap; gap: 5px; }
+            .cont-menu-dash li { margin: 0; }
+            .content { width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .nova-aula-card { padding: 20px; }
+            .form-row { grid-template-columns: 1fr; gap: 20px; }
+            .nova-aula-heading h2 { font-size: 19px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="padheader">
+        <div class="container vis-btn-logo">
+            <div class="logo">
+                <img src="IMGS/reclasslogo.jpeg" alt="Logo Reclass">
+            </div>
+            <nav class="btns-header">
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="#" id="linkSair" class="bt-age">Sair do professor</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="paddashP">
+            <aside class="menu-dash">
+                <h3>Painel do Professor</h3>
+                <ul class="cont-menu-dash">
+                    <li><a href="dashP.html"><i class="fas fa-chart-line"></i> Início</a></li>
+                    <li><a href="alunos.html"><i class="fas fa-users"></i> Alunos</a></li>
+                    <li><a href="tdsaulas.html"><i class="fas fa-calendar-alt"></i> Todas as Aulas</a></li>
+                    <li><a href="maisaula.html" class="escrita-menu-dash"><i class="fas fa-plus-circle"></i> Abrir Nova Aula</a></li>
+                    <li><a href="perfilP.html"><i class="fas fa-user"></i> Meu Perfil</a></li>
+                </ul>
+            </aside>
+
+            <section class="content">
+                <div class="nova-aula-card">
+                    <div class="nova-aula-heading">
+                        <h2><i class="fas fa-calendar-plus"></i> Cadastrar Nova Aula de Reposição</h2>
+                        <p>Preencha as informações abaixo para disponibilizar uma aula aos alunos.</p>
+                    </div>
+
+                    <div id="mensagemFormulario" class="mensagem-formulario" role="status" aria-live="polite"></div>
+
+                    <form id="formNovaAula" class="form-nova-aula">
+                        <div class="input-group">
+                            <label for="titulo">Título da aula</label>
+                            <input type="text" id="titulo" name="titulo" maxlength="150" placeholder="Ex.: Gramática Essencial - Unidade 5" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="data">Data</label>
+                                <input type="date" id="data" name="data" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="horario">Horário</label>
+                                <input type="time" id="horario" name="horario" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="vagas">Vagas totais</label>
+                                <input type="number" id="vagas" name="vagas" min="1" max="500" step="1" placeholder="Ex.: 15" required>
+                                <span class="campo-ajuda">Informe quantos alunos podem participar.</span>
+                            </div>
+                            <div class="input-group">
+                                <label for="unidade">Unidade / Local</label>
+                                <select id="unidade" name="unidade" required>
+                                    <option value="Unidade Norte">Unidade Norte</option>
+                                    <option value="Unidade Leste">Unidade Leste</option>
+                                    <option value="Unidade Sul">Unidade Sul</option>
+                                    <option value="Unidade Oeste">Unidade Oeste</option>
+                                    <option value="Unidade Centro">Unidade Centro</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="observacoes">Observações adicionais</label>
+                            <textarea id="observacoes" name="observacoes" maxlength="2000" rows="4" placeholder="Conteúdo, material necessário ou outras informações (opcional)"></textarea>
+                        </div>
+
+                        <p class="formulario-nota"><i class="fas fa-shield-halved"></i> A aula será associada à conta do professor conectado.</p>
+
+                        <button type="submit" id="btnPublicar" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> Publicar aula de reposição
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Reclass - Sistema de Reposição de Aulas</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+
+        const form = document.getElementById('formNovaAula');
+        const mensagem = document.getElementById('mensagemFormulario');
+        const botao = document.getElementById('btnPublicar');
+        const campoData = document.getElementById('data');
+
+        function hojeLocal() {
+            const agora = new Date();
+            const ano = agora.getFullYear();
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const dia = String(agora.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        campoData.min = hojeLocal();
+
+        function mostrarMensagem(texto, tipo) {
+            mensagem.textContent = texto;
+            mensagem.className = `mensagem-formulario visivel ${tipo}`;
+        }
+
+        async function verificarProfessor() {
+            const { data, error } = await supabase.auth.getUser();
+            if (error || !data.user) {
+                window.location.replace('loginP.html');
+                return null;
+            }
+
+            const { data: perfil, error: erroPerfil } = await supabase
+                .from('profiles')
+                .select('id, tipo_usuario')
+                .eq('id', data.user.id)
+                .single();
+
+            if (erroPerfil || !perfil || perfil.tipo_usuario !== 'professor') {
+                await supabase.auth.signOut();
+                window.location.replace('loginP.html');
+                return null;
+            }
+
+            return data.user;
+        }
+
+        let usuarioAtual = null;
+        try {
+            usuarioAtual = await verificarProfessor();
+        } catch (erro) {
+            console.error('Erro ao verificar professor:', erro);
+            mostrarMensagem('Não foi possível verificar sua conta. Confira sua conexão e as permissões do Supabase.', 'erro');
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            mensagem.className = 'mensagem-formulario';
+
+            if (!usuarioAtual) {
+                mostrarMensagem('Sua sessão não está ativa. Entre novamente como professor.', 'erro');
+                return;
+            }
+
+            const titulo = document.getElementById('titulo').value.trim();
+            const data = campoData.value;
+            const horario = document.getElementById('horario').value;
+            const vagas = Number(document.getElementById('vagas').value);
+            const unidade = document.getElementById('unidade').value;
+            const observacoes = document.getElementById('observacoes').value.trim();
+
+            if (!titulo || !data || !horario || !unidade) {
+                mostrarMensagem('Preencha todos os campos obrigatórios.', 'erro');
+                return;
+            }
+            if (data < hojeLocal()) {
+                mostrarMensagem('Escolha uma data de hoje ou futura.', 'erro');
+                return;
+            }
+            if (!Number.isInteger(vagas) || vagas < 1 || vagas > 500) {
+                mostrarMensagem('Informe um número de vagas entre 1 e 500.', 'erro');
+                return;
+            }
+
+            botao.disabled = true;
+            botao.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+
+            try {
+                const { error } = await supabase
+                    .from('aulas')
+                    .insert({
+                        titulo,
+                        data,
+                        horario,
+                        unidade,
+                        vagas,
+                        observacoes: observacoes || null
+                    });
+
+                if (error) throw error;
+
+                mostrarMensagem('Aula publicada com sucesso! Ela já foi salva no Supabase.', 'sucesso');
+                form.reset();
+                campoData.min = hojeLocal();
+                document.getElementById('unidade').selectedIndex = 0;
+            } catch (erro) {
+                console.error('Erro ao publicar aula:', erro);
+                let detalhe = erro.message || 'Erro desconhecido.';
+                if (erro.code === '42501' || /row-level security|policy/i.test(detalhe)) {
+                    detalhe = 'O Supabase bloqueou a gravação. Confira se seu perfil está como professor e se a política INSERT da tabela aulas está configurada.';
+                } else if (/column .* does not exist|schema cache/i.test(detalhe)) {
+                    detalhe = 'A estrutura da tabela aulas não corresponde ao formulário. Confira as colunas titulo, data, horario, unidade, vagas, observacoes e professor_id.';
+                }
+                mostrarMensagem('Não foi possível publicar a aula. ' + detalhe, 'erro');
+            } finally {
+                botao.disabled = false;
+                botao.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar aula de reposição';
+            }
+        });
+
+        document.getElementById('linkSair').addEventListener('click', async (event) => {
+            event.preventDefault();
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                mostrarMensagem('Não foi possível encerrar a sessão: ' + error.message, 'erro');
+                return;
+            }
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
